@@ -30,15 +30,15 @@ import { AuthService } from '../../core/services/auth.service';
               <div class="hidden md:flex items-center gap-3">
                 <div class="text-right">
                   <p class="text-sm font-semibold text-dark-700">
-                    {{ authService.currentUser()?.firstName }} {{ authService.currentUser()?.lastName }}
+                    {{ authService.currentUser()?.username }} {{ authService.currentUser()?.username }}
                   </p>
                   <p class="text-xs text-gray-500 capitalize">
-                    {{ authService.currentUser()?.role }}
+                    {{ authService.currentUser()?.rol }}
                   </p>
                 </div>
                 <div class="w-10 h-10 bg-linear-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center shadow-lg ring-2 ring-primary-200 shrink-0">
                   <span class="text-white font-bold text-lg">
-                    {{ authService.currentUser()?.firstName?.charAt(0) }}
+                    {{ authService.currentUser()?.username?.charAt(0) }}
                   </span>
                 </div>
               </div>
