@@ -12,21 +12,21 @@ import { AuthService } from '../../../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-linear-to-br from-dark-700 via-dark-600 to-primary-600 px-4">
-      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 space-y-6">
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-dark-700 via-dark-600 to-primary-600 px-8 sm:px-16 py-12"> <!-- Added vertical padding for more spacing -->
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-20 space-y-12"> <!-- Increased spacing between elements -->
         <!-- Header -->
         <div class="text-center">
-          <div class="flex items-center justify-center space-x-2 mb-2">
-            <span class="text-4xl">🐾</span>
-            <h1 class="text-3xl font-bold">
+          <div class="flex items-center justify-center space-x-6 mb-10"> <!-- Increased bottom margin and spacing between icon and text -->
+            <span class="text-7xl">🐾</span> <!-- Increased icon size -->
+            <h1 class="text-6xl font-bold"> <!-- Increased text size -->
               <span class="text-dark-700">Clínica</span><span class="text-primary-600">animal</span>
             </h1>
           </div>
-          <p class="text-gray-600 text-sm">Sistema de Gestión Veterinaria</p>
+          <p class="text-gray-600 text-xl">Sistema de Gestión Veterinaria</p> <!-- Increased text size -->
         </div>
 
         <!-- Login Form -->
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-12"> <!-- Increased spacing between elements -->
           <!-- Error Message -->
           @if (errorMessage()) {
             <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg text-sm flex items-start" role="alert">
@@ -37,9 +37,9 @@ import { AuthService } from '../../../../core/services/auth.service';
             </div>
           }
 
-          <!-- Email Field -->
-          <div class="space-y-2">
-            <label for="nombreUsuario" class="block text-sm font-medium text-gray-700">
+          <!-- Nombre de Usuario -->
+          <div class="space-y-8"> <!-- Increased spacing between label and input -->
+            <label for="nombreUsuario" class="block text-xl font-medium text-gray-700"> <!-- Increased text size -->
               Nombre de Usuario
             </label>
             <input 
@@ -47,18 +47,17 @@ import { AuthService } from '../../../../core/services/auth.service';
               type="text" 
               formControlName="nombreUsuario"
               placeholder="admin"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors outline-none"
+              class="w-full px-8 py-6 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors outline-none"
               [class.border-red-300]="loginForm.get('nombreUsuario')?.invalid && loginForm.get('nombreUsuario')?.touched"
               [class.focus:ring-red-500]="loginForm.get('nombreUsuario')?.invalid && loginForm.get('nombreUsuario')?.touched">
-
             @if (loginForm.get('nombreUsuario')?.invalid && loginForm.get('nombreUsuario')?.touched) {
-              <p class="text-xs text-red-600 mt-1">El nombre de usuario es requerido</p>
+              <p class="text-base text-red-600 mt-2">El nombre de usuario es requerido</p>
             }
           </div>
 
-          <!-- Password Field -->
-          <div class="space-y-2">
-            <label for="password" class="block text-sm font-medium text-gray-700">
+          <!-- Contraseña -->
+          <div class="space-y-8"> <!-- Increased spacing between label and input -->
+            <label for="password" class="block text-xl font-medium text-gray-700"> <!-- Increased text size -->
               Contraseña
             </label>
             <input 
@@ -66,22 +65,22 @@ import { AuthService } from '../../../../core/services/auth.service';
               type="password" 
               formControlName="claveUsuario"
               placeholder="••••••••"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors outline-none"
+              class="w-full px-8 py-6 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors outline-none"
               [class.border-red-300]="loginForm.get('claveUsuario')?.invalid && loginForm.get('claveUsuario')?.touched"
               [class.focus:ring-red-500]="loginForm.get('claveUsuario')?.invalid && loginForm.get('claveUsuario')?.touched">
             @if (loginForm.get('claveUsuario')?.invalid && loginForm.get('claveUsuario')?.touched) {
-              <p class="text-xs text-red-600 mt-1">La contraseña es requerida</p>
+              <p class="text-base text-red-600 mt-2">La contraseña es requerida</p>
             }
           </div>
 
-          <!-- Submit Button -->
+          <!-- Botón de Enviar -->
           <button 
             type="submit"
             [disabled]="loginForm.invalid || loading()"
-            class="w-full bg-primary-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg">
+            class="w-full bg-primary-600 text-white font-semibold py-6 px-8 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"> <!-- Increased padding and button size -->
             @if (loading()) {
               <span class="flex items-center justify-center">
-                <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg class="animate-spin h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -92,7 +91,6 @@ import { AuthService } from '../../../../core/services/auth.service';
             }
           </button>
 
-         
         </form>
       </div>
     </div>
