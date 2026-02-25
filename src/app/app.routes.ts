@@ -30,6 +30,7 @@ export const routes: Routes = [
         loadComponent: () => import('./features/clientes/clientes-page.component')
           .then(m => m.ClientesPageComponent)
       },
+      
       // Mascotas
       {
         path: 'mascotas',
