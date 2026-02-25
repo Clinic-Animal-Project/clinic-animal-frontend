@@ -39,19 +39,20 @@ import { AuthService } from '../../../../core/services/auth.service';
 
           <!-- Email Field -->
           <div class="space-y-2">
-            <label for="email" class="block text-sm font-medium text-gray-700">
-              Correo Electrónico
+            <label for="nombreUsuario" class="block text-sm font-medium text-gray-700">
+              Nombre de Usuario
             </label>
             <input 
-              id="email"
-              type="email" 
-              formControlName="email"
-              placeholder="admin@clinica.com"
+              id="nombreUsuario"
+              type="text" 
+              formControlName="nombreUsuario"
+              placeholder="admin"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors outline-none"
-              [class.border-red-300]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-              [class.focus:ring-red-500]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-            @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-              <p class="text-xs text-red-600 mt-1">Ingrese un email válido</p>
+              [class.border-red-300]="loginForm.get('nombreUsuario')?.invalid && loginForm.get('nombreUsuario')?.touched"
+              [class.focus:ring-red-500]="loginForm.get('nombreUsuario')?.invalid && loginForm.get('nombreUsuario')?.touched">
+
+            @if (loginForm.get('nombreUsuario')?.invalid && loginForm.get('nombreUsuario')?.touched) {
+              <p class="text-xs text-red-600 mt-1">El nombre de usuario es requerido</p>
             }
           </div>
 
@@ -61,14 +62,14 @@ import { AuthService } from '../../../../core/services/auth.service';
               Contraseña
             </label>
             <input 
-              id="password"
+              id="claveUsuario"
               type="password" 
-              formControlName="password"
+              formControlName="claveUsuario"
               placeholder="••••••••"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors outline-none"
-              [class.border-red-300]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-              [class.focus:ring-red-500]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-            @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+              [class.border-red-300]="loginForm.get('claveUsuario')?.invalid && loginForm.get('claveUsuario')?.touched"
+              [class.focus:ring-red-500]="loginForm.get('claveUsuario')?.invalid && loginForm.get('claveUsuario')?.touched">
+            @if (loginForm.get('claveUsuario')?.invalid && loginForm.get('claveUsuario')?.touched) {
               <p class="text-xs text-red-600 mt-1">La contraseña es requerida</p>
             }
           </div>
@@ -91,15 +92,7 @@ import { AuthService } from '../../../../core/services/auth.service';
             }
           </button>
 
-          <!-- Credentials Hint -->
-          <div class="mt-6 bg-primary-50 border-l-4 border-primary-600 p-4 rounded-lg text-xs text-primary-900 space-y-1">
-            <p class="font-semibold text-sm mb-2">🔑 Credenciales de prueba:</p>
-            <div class="space-y-1.5 text-primary-800">
-              <p><span class="font-medium">👑 Admin:</span> admin@clinica.com / admin123</p>
-              <p><span class="font-medium">🩺 Veterinario:</span> veterinario@clinica.com / vet123</p>
-              <p><span class="font-medium">📋 Recepción:</span> recepcion@clinica.com / recep123</p>
-            </div>
-          </div>
+         
         </form>
       </div>
     </div>
@@ -117,8 +110,8 @@ export class LoginComponent {
 
   constructor() {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      nombreUsuario: ['', Validators.required],
+      claveUsuario: ['', Validators.required]
     });
   }
 
@@ -129,16 +122,18 @@ export class LoginComponent {
 
       const credentials = this.loginForm.value;
 
-      // Usar login simulado (MOCK)
-      this.authService.loginMock(credentials)
-        .then(() => {
+     
+      this.authService.login(credentials).subscribe({
+        next: (response) => {
           this.loading.set(false);
           this.router.navigate(['/']);
-        })
-        .catch((error) => {
+        },
+        error: (error) => {
           this.loading.set(false);
-          this.errorMessage.set(error.message || 'Usuario o contraseña incorrectos');
-        });
+          this.errorMessage.set(error.error?.mensaje || 'Usuario o contraseña incorrectos');
+        }
+      });
+        
     }
   }
 }

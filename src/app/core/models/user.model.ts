@@ -10,18 +10,22 @@ export interface User {
 }
 
 export enum UserRole {
-  ADMIN = 'admin',
-  VETERINARIAN = 'veterinarian',
-  RECEPTIONIST = 'receptionist'
+  ADMIN = 'ADMIN',
+  EMPLEADO = 'EMPLEADO',
 }
 
 export interface LoginCredentials {
-  email: string;
-  password: string;
+  nombreUsuario: string;
+  claveUsuario: string;
 }
 
 export interface AuthResponse {
-  user: User;
-  token: string;
-  refreshToken: string;
+  success: boolean;
+  mensaje: string;
+  data: string; //token
+}
+
+export interface UserPayload{
+  username: string; 
+  rol: UserRole; 
 }

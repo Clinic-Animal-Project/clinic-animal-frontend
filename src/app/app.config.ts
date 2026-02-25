@@ -4,14 +4,14 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
-// authInterceptor deshabilitado — pendiente de integración con backend JWT real
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([errorInterceptor])
+      withInterceptors([authInterceptor, errorInterceptor])
     )
   ]
 };
