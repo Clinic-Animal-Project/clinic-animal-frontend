@@ -90,8 +90,8 @@ guardarSeleccion(mascota: Mascota, cliente: Client | null) {
     nombre: cliente.nombre
   };
 
-  sessionStorage.setItem('mascotaSeleccionada', JSON.stringify(mascotaData));
-  sessionStorage.setItem('clienteSeleccionado', JSON.stringify(clienteData));
+localStorage.setItem('mascotaSeleccionada', JSON.stringify(mascotaData));
+localStorage.setItem('clienteSeleccionado', JSON.stringify(clienteData));
 
   console.log("Mascota guardada 👉", mascotaData);
 }
