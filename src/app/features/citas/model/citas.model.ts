@@ -2,6 +2,7 @@ import { Client } from "../../clientes/model/client-model";
 import { AreasResponse } from "../../crud/areas/model/areas.model";
 import { PersonalResponse } from "../../crud/personal/model/personal.model";
 import { ServicioResponse } from "../../crud/servicios/model/servicio.model";
+import { Mascota } from "../../mascotas/models/mascotas.models";
 
 export interface CitasRequest {
     fechaHora: string; // Usamos string para fechas en solicitudes JSON
@@ -23,7 +24,7 @@ export interface CitasResponse{
     id: number;
     fechaHora: string; // Usamos string para fechas en respuestas JSON
     cliente: Client;
-    mascota: string;
+    mascota: Mascota;
     area: AreasResponse;
     veterinario: PersonalResponse;
     estado: EstadoCita;
