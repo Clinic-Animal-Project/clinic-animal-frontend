@@ -1,0 +1,64 @@
+<div class="p-8">
+  <h1 class="text-3xl font-bold text-[var(--color-dark-700)] mb-6">Mascotas</h1>
+
+  <!-- 🔎 BUSCADOR -->
+  <input type="text"
+         [(ngModel)]="nombreBusqueda"
+         (input)="buscarPorNombre()"
+         placeholder="Buscar mascota por nombre"
+         class="p-4 rounded border border-[var(--color-dark-300)] w-full max-w-md mb-6">
+
+  <!-- 📋 TABLA -->
+  <div class="bg-white shadow-xl rounded-2xl border border-[var(--color-dark-100)] animate-fade-in overflow-x-auto">
+    <table class="min-w-full text-base text-left border-collapse rounded-lg overflow-hidden">
+
+      <!-- HEADER -->
+      <thead class="bg-[var(--color-primary-600)] text-white text-sm uppercase">
+        <tr>
+          <th></th>
+          <th class="px-6 py-3">ID</th>
+          <th class="px-6 py-3">Mascota</th>
+          <th class="px-6 py-3">Especie</th>
+          <th class="px-6 py-3">Raza</th>
+          <th class="px-6 py-3">Edad</th>
+          <th class="px-6 py-3">Género</th>
+          <th class="px-6 py-3">ID de Dueño</th>
+          <th class="px-6 py-3">Acción</th>
+        </tr>
+      </thead>
+
+      <!-- BODY -->
+      <tbody class="divide-y">
+        <tr *ngFor="let m of mascotas"
+            class="hover:bg-[var(--color-primary-50)] transition duration-200 cursor-pointer">
+
+          <td class="px-6 py-4 font-semibold text-[var(--color-dark-700)]">-</td>
+          <td class="px-6 py-4 font-semibold text-[var(--color-dark-700)]">#{{ m.id }}</td>
+
+          <td class="px-6 py-4">
+            <div class="flex flex-col">
+              <span class="font-semibold text-[var(--color-dark-700)]">{{ m.nombre }}</span>
+              <span class="text-xs text-[var(--color-dark-400)]">Mascota registrada</span>
+            </div>
+          </td>
+
+          <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ m.especie }}</td>
+          <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ m.raza }}</td>
+          <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ m.edad }}</td>
+          <td class="px-6 py-4 text-[var(--color-primary-600)] font-medium">{{ m.sexo }}</td>
+          <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ m.idCliente || '—' }}</td>
+
+          <td class="px-6 py-4">
+            <button (click)="guardarSeleccion(m)"
+                    class="bg-[var(--color-primary-600)] text-white px-4 py-2 text-sm rounded-lg
+                           hover:bg-[var(--color-primary-500)] transition font-medium shadow-sm
+                           hover:shadow-md">
+              Seleccionar
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

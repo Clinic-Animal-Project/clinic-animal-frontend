@@ -5,5 +5,5 @@ export interface Mascota{
   raza: string;
   edad: string;
   sexo: string;
-  cliente?: number;
+  idCliente?: number;
 }

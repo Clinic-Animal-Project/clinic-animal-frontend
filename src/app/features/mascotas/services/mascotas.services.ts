@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Client } from '../model/client-model';
 import { Mascota } from '../../mascotas/models/mascotas.models';
 
 
@@ -29,12 +28,11 @@ export interface PaginatedResponse<T> {
 @Injectable({
   providedIn: 'root'
 })
-export class ClientService {
+export class MascotaService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/clientes`;
-  private mascotasApiUrl = `${environment.apiUrl}/mascotas`;
+  private apiUrl = `${environment.apiUrl}/mascotas`;
 
-listarClientes(nombre: string): Observable<Client[]> {
+listarMascotas(nombre: string): Observable<Mascota[]> {
   if (nombre) {
     const params = new HttpParams().set('nombre', nombre);
     return this.http.get<any>(this.apiUrl, { params }).pipe(
@@ -52,14 +50,4 @@ listarClientes(nombre: string): Observable<Client[]> {
     );
   }
 }
-
-listarMascotasPorCliente(id: number): Observable<Mascota[]> {
-  return this.http.get<any>(`${this.mascotasApiUrl}/cliente/${id}`).pipe(
-    map(resp => {
-      console.log("Mascotas del cliente 👉", resp);
-      return resp.data ?? [];
-    })
-  );
-}
-
 }
