@@ -30,7 +30,7 @@
           <th class="px-6 py-4">Raza</th>
           <th class="px-6 py-4">Edad</th>
           <th class="px-6 py-4">Género</th>
-          <th class="px-6 py-4">ID de Dueño</th>
+          <th class="px-6 py-4">Cliente</th>
           <th class="px-6 py-4 last:rounded-tr-2xl">Acción</th>
         </tr>
       </thead>
@@ -54,8 +54,10 @@
           <td class="px-6 py-5 text-[var(--color-dark-500)] text-lg">{{ m.raza }}</td>
           <td class="px-6 py-5 text-[var(--color-dark-500)] text-lg">{{ m.edad }}</td>
           <td class="px-6 py-5 text-[var(--color-primary-600)] font-medium text-lg">{{ m.sexo }}</td>
-          <td class="px-6 py-5 text-[var(--color-dark-500)] text-lg">{{ m.idCliente || '—' }}</td>
-
+<td class="px-6 py-5 text-[var(--color-dark-500)] text-lg">
+  {{ m.idCliente || '—' }} 
+  <span *ngIf="m.nombreCliente">- {{ m.nombreCliente }}</span>
+</td>
           <td class="px-6 py-5">
             <button (click)="guardarSeleccion(m)"
                     class="bg-[var(--color-primary-600)] text-white px-6 py-3 text-lg rounded-xl

@@ -6,4 +6,5 @@ export interface Mascota{
   edad: string;
   sexo: string;
   idCliente?: number;
+    nombreCliente?: string;
 }
