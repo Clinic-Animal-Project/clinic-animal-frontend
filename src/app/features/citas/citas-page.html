@@ -35,16 +35,16 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
-        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Fecha de Cita</label>
-        <input type="date" [(ngModel)]="cita().fechaHora"
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
+  <label class="block mb-2 text-sm font-medium text-blue-gray-900">Fecha y Hora de Cita</label>
+  <input type="datetime-local" [(ngModel)]="cita().fechaHora"
+    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+</div>
       <div>
         <label class="block mb-2 text-sm font-medium text-blue-gray-900">Área</label>
         <select [(ngModel)]="cita().idArea" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
-          <option value="" disabled>Seleccione área</option>
+          <option [ngValue]="null" disabled>Seleccione área</option>
           @for (item of areaslist(); track item.id) {
-            <option [value]="item.id">{{item.nomArea}}</option>
+            <option [ngValue]="item.id">{{item.nomArea}}</option>
           }
         </select>
       </div>
@@ -53,11 +53,11 @@
       <div>
         <label class="block mb-2 text-sm font-medium text-blue-gray-900">Veterinario</label>
         <select [(ngModel)]="cita().idVeterinario" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
-          <option value="" disabled>Asignar médico</option>
+          <option [ngValue]="null" disabled>Asignar médico</option>
           @for (vet of personalist(); track vet.id) {
 
             @if (cita().idArea == vet.idArea) {
-              <option [value]="vet.id">{{vet.nombrePersonal}}</option>
+              <option [ngValue]="vet.id">{{vet.nombrePersonal}}</option>
             }
           }
         </select>
@@ -129,9 +129,64 @@
     </div>
 
     <div class="flex justify-end mt-6">
-      <button class="bg-gray-900 text-white px-10 py-3 rounded-lg font-bold hover:shadow-lg active:scale-95 transition-all">
+      <button (click)="registrarCita(cita())" class="bg-gray-900 text-white px-10 py-3 rounded-lg font-bold hover:shadow-lg active:scale-95 transition-all">
         GUARDAR CITA
       </button>
     </div>
   </div>
 </section>
+
+
+
+@if (mostrarModal()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+  
+  <div class="bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-300">
+    
+    <div class="bg-primary-600 p-8 text-center relative">
+      <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 10px 10px;"></div>
+      <div class="inline-flex items-center justify-center h-20 w-20 bg-white rounded-full shadow-lg mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h3 class="text-white text-2xl font-black uppercase tracking-tight">¡Cita Registrada!</h3>
+    </div>
+
+    <div class="p-8">
+      <div class="space-y-6">
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-center border-b border-gray-50 pb-2">
+            <span class="text-xs font-black text-dark-300 uppercase tracking-widest">Código</span>
+            <span class="text-sm font-bold text-dark-700">#{{ citaRegistrada()?.id }}</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b border-gray-50 pb-2">
+            <span class="text-xs font-black text-dark-300 uppercase tracking-widest">Paciente</span>
+            <span class="text-sm font-black text-primary-600 uppercase">{{ citaRegistrada()?.mascota?.nombre }}</span>
+          </div>
+
+          <div class="flex justify-between items-center border-b border-gray-50 pb-2">
+            <span class="text-xs font-black text-dark-300 uppercase tracking-widest">Dueño</span>
+            <span class="text-sm font-bold text-dark-700">{{ citaRegistrada()?.cliente?.nombre }} {{ citaRegistrada()?.cliente?.apellido }}</span>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-2xl">
+            <p class="text-[10px] font-black text-dark-300 uppercase tracking-widest mb-1">Fecha y Hora</p>
+            <p class="text-sm font-black text-dark-700">{{ citaRegistrada()?.fechaHora }}</p>
+          </div>
+        </div>
+
+        <p class="text-center text-dark-400 text-xs font-medium leading-relaxed">
+          La cita ha sido programada exitosamente en el área de <span class="font-bold text-dark-700">{{ citaRegistrada()?.area?.nomArea }}</span>.
+        </p>
+      </div>
+
+      <button (click)="cerrarYRegresar()" 
+        class="w-full mt-8 bg-dark-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-primary-600 transition-all shadow-lg active:scale-95">
+        Entendido
+      </button>
+    </div>
+  </div>
+</div>
+}

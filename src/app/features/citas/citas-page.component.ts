@@ -6,7 +6,7 @@ import { PersonalService } from '../crud/personal/service/personal.service';
 import { PersonalResponse } from '../crud/personal/model/personal.model';
 import { ServicioService } from '../crud/servicios/service/servicio.service';
 import { ServicioResponse } from '../crud/servicios/model/servicio.model';
-import { CitaServicioRequestDto, EstadoCita, CitasRequest } from './model/citas.model';
+import { CitaServicioRequestDto, EstadoCita, CitasRequest, CitasResponse } from './model/citas.model';
 import { CitasService } from './service/citas.service';
 
 interface ClienteSession {
@@ -64,7 +64,7 @@ export class CitasPageComponent {
     idMascota: 0,
     fechaHora: '',
     idArea: 0,
-    idVeterinario: undefined,
+    idVeterinario: null,
     estado: EstadoCita.PROGRAMADA,
     servicios: []
   });
@@ -72,24 +72,34 @@ export class CitasPageComponent {
   serviciosSeleccionados = signal<CitaServicioRequestDto[]>([]);
   servicioActual = { id: 0, cantidad: 1 };
 
+  // En tu componente
+  mostrarModal = signal(false);
+  citaRegistrada = signal<CitasResponse | null>(null);
 
   registrarCita(cita: CitasRequest) {
+    console.log("Registrando cita con datos:", cita);
+
     this.citaService.registrarCita(cita).subscribe({
       next: (response) => {
-        console.log("Cita registrada con éxito:", response);
-        alert("Cita registrada con éxito");
+        console.log("Cita registrada con éxito:", response.data);
+        this.citaRegistrada.set(response.data);
+        this.mostrarModal.set(true);
       },
       error: (error) => {
-        console.error("Error al registrar cita:", error);
+        console.error("Error al registrar cita:", error.mensaje || error);
         alert("Error al registrar cita");
       }
     });
   }
-
+  
+  cerrarYRegresar() {
+      this.mostrarModal.set(false);
+      // Lógica para limpiar el formulario o navegar al inicio
+  }
   loadClienteAndMascota() {
     // Simulación de carga de cliente y mascota
-    sessionStorage.getItem('clienteSeleccionado') ? this.cliente.set(JSON.parse(sessionStorage.getItem('clienteSeleccionado')!)): null;
-    sessionStorage.getItem('mascotaSeleccionada') ? this.mascota.set(JSON.parse(sessionStorage.getItem('mascotaSeleccionada')!)) : null;
+    localStorage.getItem('clienteSeleccionado') ? this.cliente.set(JSON.parse(localStorage.getItem('clienteSeleccionado')!)): null;
+    localStorage.getItem('mascotaSeleccionada') ? this.mascota.set(JSON.parse(localStorage.getItem('mascotaSeleccionada')!)) : null;
 
   }
 
@@ -137,6 +147,13 @@ export class CitasPageComponent {
         cantidad: this.servicioActual.cantidad,
         precioBase: base.precio
       }]);
+
+      this.cita.update(actual => ({
+        ...actual,
+        servicios: this.serviciosSeleccionados()
+      }));
+
+      console.log("Servicios seleccionados:", this.serviciosSeleccionados());
 
       // Reset temporal
       this.servicioActual = { id: 0, cantidad: 1 };

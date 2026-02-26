@@ -16,10 +16,8 @@ export class CitasService {
     return this.http.post(this.apiUrl, citaData);
   }
 
-  listarCitas(): Observable<CitasResponse[]> {
-      return this.http.get<ApiResponse<CitasResponse[]>>(this.apiUrl).pipe(
-        map(resp => resp.data ?? [])
-      );
+  listarCitas(): Observable<ApiResponse<CitasResponse[]>> {
+      return this.http.get<ApiResponse<CitasResponse[]>>(this.apiUrl);
   }
 
   listarPorEstados(estado:EstadoCita): Observable<CitasResponse[]> {

@@ -10,7 +10,7 @@ export interface CitasRequest {
     idMascota: number;
     idCliente: number;
     estado: EstadoCita; // Solo PROGRAMADA o EN_COLA permitidos al crear
-    idVeterinario?: number; // Requerido solo si estado == EN_COLA
+    idVeterinario?: number | null; // Requerido solo si estado == EN_COLA
     servicios: CitaServicioRequestDto[];
 }
 
