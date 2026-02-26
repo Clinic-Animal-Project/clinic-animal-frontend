@@ -1,0 +1,192 @@
+<section class="px-8 py-12 container mx-auto">
+  <div class="mb-8">
+    <h5 class="text-2xl font-bold text-blue-gray-900">Registro de Cita Médica</h5>
+    <p class="text-sm text-gray-600 font-normal mt-1">
+      Complete la información para programar la atención veterinaria.
+    </p>
+  </div>
+
+  <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="w-full">
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Dueño / Cliente</label>
+        <input type="text"  placeholder="Nombre del dueño"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+          [value]="cliente()?.nombre" readonly
+          #txtcliente
+          >
+      </div>
+      <div class="w-full">
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Nombre de la Mascota</label>
+        <input type="text"  placeholder="Nombre del paciente"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          [value]="mascota()?.nombre" readonly
+          #txtmascota>
+      </div>
+      <div class="w-full">
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Estado de Cita</label>
+        <select [(ngModel)]="cita().estado" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
+          @for (estado of estadosCita; track estado) {
+            <option [value]="estado">{{estado}}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+  <label class="block mb-2 text-sm font-medium text-blue-gray-900">Fecha y Hora de Cita</label>
+  <input type="datetime-local" [(ngModel)]="cita().fechaHora"
+    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+</div>
+      <div>
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Área</label>
+        <select [(ngModel)]="cita().idArea" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
+          <option [ngValue]="null" disabled>Seleccione área</option>
+          @for (item of areaslist(); track item.id) {
+            <option [ngValue]="item.id">{{item.nomArea}}</option>
+          }
+        </select>
+      </div>
+      @if (cita().estado === estadosCita.at(1)) {
+        
+      <div>
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Veterinario</label>
+        <select [(ngModel)]="cita().idVeterinario" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
+          <option [ngValue]="null" disabled>Asignar médico</option>
+          @for (vet of personalist(); track vet.id) {
+
+            @if (cita().idArea == vet.idArea) {
+              <option [ngValue]="vet.id">{{vet.nombrePersonal}}</option>
+            }
+          }
+        </select>
+      </div>
+    }
+    </div>
+
+    <hr class="my-4 border-gray-200">
+
+    <div class="bg-gray-50 p-6 rounded-xl border border-dashed border-gray-400">
+      <h6 class="text-lg font-semibold text-blue-gray-800 mb-4">Detalle de Servicios</h6>
+      
+      <div class="flex flex-col md:flex-row gap-4 items-end mb-6">
+        <div class="flex-grow">
+          <label class="block mb-2 text-sm font-medium text-blue-gray-900">Seleccionar Servicio</label>
+          <select [(ngModel)]="servicioActual.id" class="w-full p-3 border border-gray-300 rounded-lg bg-white outline-none">
+            @for ( s of servicioslist(); track s.nombre) {
+              @if (cita().idArea == s.codigoArea) {
+              <option [value]="s.id" id={{s.id}} >{{s.nombre}} (S/ {{s.precio}})</option>
+              }
+            }
+          </select> 
+        </div>
+        <div class="w-full md:w-32">
+          <label class="block mb-2 text-sm font-medium text-blue-gray-900">Cant.</label>
+          <input type="number" [(ngModel)]="servicioActual.cantidad" min="1"
+            class="w-full p-3 border border-gray-300 rounded-lg outline-none">
+        </div>
+        <button (click)="agregarServicio()" 
+          class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+          Agregar
+        </button>
+      </div>
+
+      @if (serviciosSeleccionados().length > 0) {
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="text-blue-gray-400 text-sm uppercase">
+                <th class="pb-3 font-medium">Servicio</th>
+                <th class="pb-3 font-medium">Precio</th>
+                <th class="pb-3 font-medium">Cant.</th>
+                <th class="pb-3 font-medium">Subtotal</th>
+                <th class="pb-3"></th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-700">
+              @for (item of serviciosSeleccionados(); track item.idServicio) {
+                <tr class="border-t border-gray-200">
+                  <td class="py-3">{{item.idServicio}}</td>
+                  <td class="py-3">S/ {{item.precioBase}}</td>
+                  <td class="py-3">{{item.cantidad}}</td>
+                  <td class="py-3 font-semibold">S/ {{item.precioBase * item.cantidad}}</td>
+                  <td class="py-3 text-right">
+                    <button (click)="eliminarServicio(item.idServicio)" class="text-red-500 hover:text-red-700">
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <div class="mt-4 text-right">
+            <span class="text-xl font-bold text-blue-gray-900">Total: S/ {{totalCita}}</span>
+          </div>
+        </div>
+      }
+
+    </div>
+
+    <div class="flex justify-end mt-6">
+      <button (click)="registrarCita(cita())" class="bg-gray-900 text-white px-10 py-3 rounded-lg font-bold hover:shadow-lg active:scale-95 transition-all">
+        GUARDAR CITA
+      </button>
+    </div>
+  </div>
+</section>
+
+
+
+@if (mostrarModal()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+  
+  <div class="bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-300">
+    
+    <div class="bg-primary-600 p-8 text-center relative">
+      <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 10px 10px;"></div>
+      <div class="inline-flex items-center justify-center h-20 w-20 bg-white rounded-full shadow-lg mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h3 class="text-white text-2xl font-black uppercase tracking-tight">¡Cita Registrada!</h3>
+    </div>
+
+    <div class="p-8">
+      <div class="space-y-6">
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-center border-b border-gray-50 pb-2">
+            <span class="text-xs font-black text-dark-300 uppercase tracking-widest">Código</span>
+            <span class="text-sm font-bold text-dark-700">#{{ citaRegistrada()?.id }}</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b border-gray-50 pb-2">
+            <span class="text-xs font-black text-dark-300 uppercase tracking-widest">Paciente</span>
+            <span class="text-sm font-black text-primary-600 uppercase">{{ citaRegistrada()?.mascota?.nombre }}</span>
+          </div>
+
+          <div class="flex justify-between items-center border-b border-gray-50 pb-2">
+            <span class="text-xs font-black text-dark-300 uppercase tracking-widest">Dueño</span>
+            <span class="text-sm font-bold text-dark-700">{{ citaRegistrada()?.cliente?.nombre }} {{ citaRegistrada()?.cliente?.apellido }}</span>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-2xl">
+            <p class="text-[10px] font-black text-dark-300 uppercase tracking-widest mb-1">Fecha y Hora</p>
+            <p class="text-sm font-black text-dark-700">{{ citaRegistrada()?.fechaHora }}</p>
+          </div>
+        </div>
+
+        <p class="text-center text-dark-400 text-xs font-medium leading-relaxed">
+          La cita ha sido programada exitosamente en el área de <span class="font-bold text-dark-700">{{ citaRegistrada()?.area?.nomArea }}</span>.
+        </p>
+      </div>
+
+      <button (click)="cerrarYRegresar()" 
+        class="w-full mt-8 bg-dark-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-primary-600 transition-all shadow-lg active:scale-95">
+        Entendido
+      </button>
+    </div>
+  </div>
+</div>
+}

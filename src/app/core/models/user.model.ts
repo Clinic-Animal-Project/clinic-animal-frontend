@@ -25,7 +25,7 @@ export interface AuthResponse {
   data: string; //token
 }
 
-export interface UserPayload{
-  username: string; 
-  rol: UserRole; 
+export interface UserPayload {
+  username: string;
+  rol: UserRole;
 }

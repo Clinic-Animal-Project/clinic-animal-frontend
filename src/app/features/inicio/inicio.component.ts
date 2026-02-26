@@ -1,8 +1,57 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, effect, computed } from '@angular/core';
+import { CitasResponse, EstadoCita } from '../citas/model/citas.model';
+import { CitasService } from '../citas/service/citas.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-inicio',
-  standalone: true,
-  template: `<div class="p-8"><h1 class="text-2xl font-bold text-gray-700">Inicio</h1></div>`
+  imports: [CommonModule],
+  templateUrl: './inicio.component.html',
 })
-export class InicioComponent {}
+export class InicioComponent {
+  private citasService = inject(CitasService);
+
+  // Signals para el estado global de la página
+  estadosCita = Object.values(EstadoCita);
+  estadoSeleccionado = signal<EstadoCita >(EstadoCita.PROGRAMADA); // Estado seleccionado para filtrar
+  citas = signal<CitasResponse[]>([]); // Lista que devuelve el backend
+  cargando = signal<boolean>(false);
+
+  constructor() {
+    // Cada vez que cambie el estadoSeleccionado, pedimos datos al Backend
+    effect(() => {
+      this.cargarCitas();
+    }, { allowSignalWrites: true });
+  }
+
+  cargarCitas() {
+    this.cargando.set(true);
+    const estado = this.estadoSeleccionado();
+    
+    // Llamamos al backend pasando el estado como filtro
+    this.citasService.listarPorEstados(estado).subscribe({
+      next: (data) => {
+        this.citas.set(data);
+        this.cargando.set(false);
+      },
+      error: (err) => {
+        console.error('Error al traer citas', err);
+        this.cargando.set(false);
+      }
+    });
+  }
+
+  filtrarPorEstado(estado: EstadoCita) {
+    // Si hace clic en el que ya está, deselecciona para traer todas
+    if (this.estadoSeleccionado() === estado) {
+      this.estadoSeleccionado.set(EstadoCita.PROGRAMADA); // O podrías usar null para no filtrar
+    } else {
+      this.estadoSeleccionado.set(estado);
+    }
+  }
+
+  // Método para el contador de las tarjetas (puedes traer estos totales en otro endpoint)
+  contarCitasPorEstado(estado: string): number {
+    return this.citas().filter(c => c.estado === estado).length;
+  }
+}
