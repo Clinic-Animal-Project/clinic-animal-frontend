@@ -1,93 +1,113 @@
-<div class="p-8">
-  <h1 class="text-3xl font-bold text-gray-800 mb-6">Clientes</h1>
-<input type="number" [(ngModel)]="clienteId" placeholder="Ingrese ID del cliente"
-       class="p-2 rounded border border-gray-300 mr-2">
+<div class="p-11 bg-[var(--color-dark-50)] min-h-screen">
+  <h1 class="text-4xl md:text-3xl font-extrabold text-[var(--color-dark-700)] mb-8 tracking-tight">
+    Clientes
+  </h1>
+  <br>
+  <!-- 🔎 BUSCADOR -->
 
-<button (click)="buscarClientePorId(clienteId)"
-        class="bg-blue-200 text-blue-900 font-bold py-2 px-4 rounded
-               transform transition-transform duration-200 hover:scale-110 hover:shadow-lg">
-  Buscar Cliente
-</button>
-<br><br>
-  <div class="bg-white shadow-xl rounded-2xl border border-gray-100 animate-fade-in">
-    <table class="min-w-full text-base text-left border-collapse rounded-lg overflow-hidden">
-        
-      <!-- HEADER -->
-      <thead class="bg-indigo-500 text-white text-sm uppercase">
+<!-- input llamativo con caret visible -->
+<div class="w-full max-w-lg mx-auto">
+  <input type="text"
+         [(ngModel)]="nombreBusqueda"
+         (input)="buscarPorNombre()"
+         placeholder="Buscar cliente por nombre"
+         class="w-full px-6 py-4 rounded-2xl border-2 border-[var(--color-dark-300)]
+                text-lg text-[var(--color-dark-700)] placeholder:text-[var(--color-dark-400)]
+                focus:outline-none focus:ring-4 focus:ring-[var(--color-primary-300)]
+                focus:border-[var(--color-primary-600)]
+                caret-[var(--color-primary-600)]
+                bg-[var(--color-primary-50)] hover:bg-[var(--color-primary-100)]
+                transition duration-300"
+         style="padding-left: 1.5rem; /* 24px extra para separar caret del borde */">
+</div><br>
+  <br>
+  <!-- 📋 TABLA -->
+  <div class="bg-white shadow-2xl rounded-3xl border border-[var(--color-dark-100)] overflow-x-auto animate-fade-in">
+    <table class="min-w-full text-base text-left border-collapse rounded-2xl overflow-hidden">
+      <thead class="bg-[var(--color-primary-600)] text-white text-sm uppercase tracking-wider">
         <tr>
-            <th></th>
-          <th class="px-14 py-4 first:rounded-tl-lg"> ID</th>
+          <th></th>
+          <th class="px-6 py-4">ID</th>
           <th class="px-6 py-4">Cliente</th>
           <th class="px-6 py-4">DNI</th>
           <th class="px-6 py-4">Teléfono</th>
           <th class="px-6 py-4">Email</th>
-          <th class="px-6 py-4 last:rounded-tr-lg">Dirección</th>
+          <th class="px-6 py-4 last:rounded-tr-2xl">Dirección</th>
         </tr>
       </thead>
-
-      <!-- BODY -->
       <tbody class="divide-y">
-<tr *ngFor="let c of clientes"
-    (click)="abrirModal(c)"
-    class="hover:bg-indigo-50 transition duration-200 cursor-pointer">
-                      <td class="px-6 py-4 font-semibold text-gray-700">
-                        -
-                      </td>
-          <td class="px-6 py-4 font-semibold text-gray-700">
-            #{{ c.id }}
-          </td>
+        <tr *ngFor="let c of clientes"
+            (click)="abrirModal(c)"
+            class="hover:bg-[var(--color-primary-50)] transition duration-300 cursor-pointer group">
 
+          <td class="px-6 py-4 font-semibold text-[var(--color-dark-700)]">-</td>
+          <td class="px-6 py-4 font-semibold text-[var(--color-dark-700)]">#{{ c.id }}</td>
           <td class="px-6 py-4">
             <div class="flex flex-col">
-              <span class="font-semibold text-gray-800">
+              <span class="font-semibold text-[var(--color-dark-700)] text-lg group-hover:text-[var(--color-primary-600)] transition">
                 {{ c.nombre }} {{ c.apellido }}
               </span>
-              <span class="text-xs text-gray-400">
-                Cliente registrado
-              </span>
+              <span class="text-xs text-[var(--color-dark-400)]">Cliente registrado</span>
             </div>
           </td>
-
-          <td class="px-6 py-4 text-gray-600">
-            {{ c.dni }}
-          </td>
-
-          <td class="px-6 py-4 text-gray-600">
-            {{ c.telefono }}
-          </td>
-
-          <td class="px-6 py-4 text-indigo-600 font-medium">
-            {{ c.email }}
-          </td>
-
-          <td class="px-6 py-4 text-gray-500">
-            {{ c.direccion || '—' }}
-          </td>
+          <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ c.dni }}</td>
+          <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ c.telefono }}</td>
+          <td class="px-6 py-4 text-[var(--color-primary-600)] font-medium">{{ c.email }}</td>
+          <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ c.direccion || '—' }}</td>
         </tr>
       </tbody>
     </table>
-    <!-- MODAL CLIENTE -->
+  </div>
+
 <div *ngIf="mostrarModal"
-     class="fixed inset-0 bg-black bg-black/20 flex items-center justify-center z-50">
+     class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
 
-  <div class="bg-white rounded-2xl p-6 shadow-xl min-w-[300px] relative
-              transform transition-all scale-100">
-
+  <!-- contenedor del modal -->
+  <div class="bg-white rounded-2xl shadow-2xl w-10/12 max-w-4xl p-10 relative transition-transform transform scale-100
+              hover:shadow-3xl hover:brightness-95">
+              
     <!-- botón cerrar -->
     <button (click)="cerrarModal()"
-            class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-lg">
+            class="absolute top-6 right-6 text-[var(--color-dark-500)] hover:text-red-500 text-2xl font-bold">
       ✕
     </button>
 
-    <h2 class="text-xl font-bold text-gray-800 mb-3">
-      Cliente seleccionado
-    </h2>
+    <!-- TITULO -->
+    <div class="text-center mb-6">
+      <h2 class="text-4xl font-extrabold text-[var(--color-dark-700)]">Cliente seleccionado</h2>
+      <p class="text-2xl text-[var(--color-dark-700)] font-semibold">
+        {{ clienteSeleccionado?.nombre }} {{ clienteSeleccionado?.apellido }}
+      </p>
+      <p class="text-xl text-[var(--color-dark-500)]">DNI: {{ clienteSeleccionado?.dni }}</p>
+    </div>
 
-    <p class="text-gray-700 text-lg">
-      {{ clienteSeleccionado?.nombre }} {{ clienteSeleccionado?.apellido }}
-    </p>
+    <!-- MASCOTAS -->
+    <div class="space-y-6 max-h-96 overflow-y-auto">
+      <h3 class="font-bold text-[var(--color-dark-700)] text-2xl">Mascotas ({{ mascotas.length }})</h3>
 
+      <div *ngIf="mascotas.length === 0" class="text-[var(--color-dark-400)] text-lg">
+        Este cliente no tiene mascotas registradas
+      </div>
+
+      <div *ngFor="let m of mascotas"
+           class="bg-[var(--color-primary-50)] p-6 rounded-2xl flex items-center justify-between 
+                  hover:shadow-lg hover:bg-[var(--color-primary-100)] transition duration-200">
+
+        <!-- info mascota -->
+        <div class="flex-1 min-w-0 space-y-1">
+          <p class="font-bold text-2xl text-[var(--color-primary-600)]">🐾 {{ m.nombre }}</p>
+          <p class="text-[var(--color-dark-500)] text-lg">{{ m.especie }} - {{ m.raza }}</p>
+          <p class="text-[var(--color-dark-500)] text-lg">Edad: {{ m.edad }} | Sexo: {{ m.sexo }}</p>
+        </div>
+
+        <!-- botón seleccionar -->
+        <button (click)="guardarSeleccion(m, clienteSeleccionado)"
+                class="bg-[var(--color-primary-600)] text-white px-12 py-5 text-lg rounded-xl
+                       hover:bg-[var(--color-primary-700)] transition duration-200 font-semibold shadow-md hover:shadow-xl">
+          Seleccionar
+        </button>
+      </div>
+    </div>
   </div>
 </div>
-  </div>
 </div>
