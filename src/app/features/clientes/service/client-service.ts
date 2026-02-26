@@ -61,5 +61,7 @@ listarMascotasPorCliente(id: number): Observable<Mascota[]> {
     })
   );
 }
-
+buscarClientePorId(id: number) {
+  return this.http.get<any>(`${this.apiUrl}/${id}`);
+}
 }
