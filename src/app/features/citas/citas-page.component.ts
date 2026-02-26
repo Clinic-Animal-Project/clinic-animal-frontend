@@ -1,4 +1,4 @@
-import { Component,inject,OnInit, signal } from '@angular/core';
+import { Component,effect,inject,OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AreasService } from '../crud/areas/service/areas.service';
 import { AreasResponse } from '../crud/areas/model/areas.model';
@@ -6,13 +6,12 @@ import { PersonalService } from '../crud/personal/service/personal.service';
 import { PersonalResponse } from '../crud/personal/model/personal.model';
 import { ServicioService } from '../crud/servicios/service/servicio.service';
 import { ServicioResponse } from '../crud/servicios/model/servicio.model';
-import { EstadoCita } from './model/citas.model';
+import { CitaServicioRequestDto, EstadoCita, CitasRequest } from './model/citas.model';
+import { CitasService } from './service/citas.service';
 
-interface ServicioAgregado {
+interface ClienteSession {
   id: number;
   nombre: string;
-  precio: number;
-  cantidad: number;
 }
 
 @Component({
@@ -22,21 +21,77 @@ interface ServicioAgregado {
 })
 export class CitasPageComponent {
 
+  constructor() {
+    // Este efecto se ejecuta cada vez que cliente() cambia
+    effect(() => {
+      const datosCliente = this.cliente();
+      const datosMascota = this.mascota();
+
+      this.cita.update(actual => ({
+        ...actual,
+        idCliente: datosCliente?.id ?? actual.idCliente,
+        idMascota: datosMascota?.id ?? actual.idMascota
+      }));
+      console.log('Cita actualizada automáticamente:', this.cita().idCliente, this.cita().idMascota);
+    });
+  }
+
+  
   ngOnInit(): void {
   this.listarAreas(); // Llama al método listarAreas al inicializar el componente
   this.listarPersonal(); // Llama al método listarPersonal al inicializar el componente
   this.listarServicios(); // Llama al método listarServicios al inicializar el componente
+
+  this.loadClienteAndMascota(); // Carga cliente y mascota desde sessionStorage al iniciar el componente
 }
 
   areasServicio = inject(AreasService);
   personalService = inject(PersonalService);
   servicioService = inject(ServicioService);
+  citaService = inject(CitasService);
 
   areaslist = signal<AreasResponse[]>([]);
   personalist = signal<PersonalResponse[]>([]);
   servicioslist = signal<ServicioResponse[]>([]);
 
+  cliente = signal<ClienteSession | null>(null);
+  mascota = signal<ClienteSession | null>(null);
   estadosCita: EstadoCita[] = [EstadoCita.PROGRAMADA, EstadoCita.EN_COLA];
+
+   // Formulario
+  cita = signal<CitasRequest>({
+    idCliente: 0,
+    idMascota: 0,
+    fechaHora: '',
+    idArea: 0,
+    idVeterinario: undefined,
+    estado: EstadoCita.PROGRAMADA,
+    servicios: []
+  });
+
+  serviciosSeleccionados = signal<CitaServicioRequestDto[]>([]);
+  servicioActual = { id: 0, cantidad: 1 };
+
+
+  registrarCita(cita: CitasRequest) {
+    this.citaService.registrarCita(cita).subscribe({
+      next: (response) => {
+        console.log("Cita registrada con éxito:", response);
+        alert("Cita registrada con éxito");
+      },
+      error: (error) => {
+        console.error("Error al registrar cita:", error);
+        alert("Error al registrar cita");
+      }
+    });
+  }
+
+  loadClienteAndMascota() {
+    // Simulación de carga de cliente y mascota
+    sessionStorage.getItem('clienteSeleccionado') ? this.cliente.set(JSON.parse(sessionStorage.getItem('clienteSeleccionado')!)): null;
+    sessionStorage.getItem('mascotaSeleccionada') ? this.mascota.set(JSON.parse(sessionStorage.getItem('mascotaSeleccionada')!)) : null;
+
+  }
 
   listarAreas() {
     this.areasServicio.listarAreas().subscribe({
@@ -68,51 +123,32 @@ export class CitasPageComponent {
     });
   }
 
-
-
  
-  serviciosBase = [
-    { nombre: 'Consulta Médica', precio: 50 },
-    { nombre: 'Vacunación', precio: 45 },
-    { nombre: 'Profilaxis', precio: 200 }
-  ];
-  veterinarios = ['Dr. Paredes', 'Dra. Castro', 'Dr. Mamani'];
-  estados = ['PENDIENTE', 'CONFIRMADA', 'CANCELADA'];
-
-  // Formulario
-  cita = {
-    cliente: '',
-    mascota: '',
-    fecha: '',
-    area: '',
-    veterinario: '',
-    estado: 'PENDIENTE'
-  };
-
-  serviciosSeleccionados: ServicioAgregado[] = [];
-  servicioActual = { nombre: '', cantidad: 1 };
-
 
 
   agregarServicio() {
-    const base = this.serviciosBase.find(s => s.nombre === this.servicioActual.nombre);
+    const base = this.servicioslist().find(s => s.id == this.servicioActual.id);
+    console.log("Servicio encontrado:", base?.id); // Debug para ver si lo encuentra
+    console.log("ID buscado:", this.servicioActual.id);
     if (base && this.servicioActual.cantidad > 0) {
-      this.serviciosSeleccionados.push({
-        id: Date.now(),
-        nombre: base.nombre,
-        precio: base.precio,
-        cantidad: this.servicioActual.cantidad
-      });
+
+      this.serviciosSeleccionados.update(servicios => [...servicios, {
+        idServicio: base.id,
+        cantidad: this.servicioActual.cantidad,
+        precioBase: base.precio
+      }]);
+
       // Reset temporal
-      this.servicioActual = { nombre: '', cantidad: 1 };
+      this.servicioActual = { id: 0, cantidad: 1 };
     }
   }
 
   eliminarServicio(id: number) {
-    this.serviciosSeleccionados = this.serviciosSeleccionados.filter(s => s.id !== id);
+    this.serviciosSeleccionados.update(servicios => servicios.filter(s => s.idServicio !== id));
   }
 
   get totalCita() {
-    return this.serviciosSeleccionados.reduce((acc, s) => acc + (s.precio * s.cantidad), 0);
+    return this.serviciosSeleccionados().reduce((acc, s) => acc + (s.precioBase * s.cantidad), 0);
   }
+
 }

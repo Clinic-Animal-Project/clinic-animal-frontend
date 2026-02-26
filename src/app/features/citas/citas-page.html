@@ -10,17 +10,22 @@
     <div class="flex flex-col gap-4 md:flex-row">
       <div class="w-full">
         <label class="block mb-2 text-sm font-medium text-blue-gray-900">Dueño / Cliente</label>
-        <input type="text" [(ngModel)]="cita.cliente" placeholder="Nombre del dueño"
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+        <input type="text"  placeholder="Nombre del dueño"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+          [value]="cliente()?.nombre" readonly
+          #txtcliente
+          >
       </div>
       <div class="w-full">
         <label class="block mb-2 text-sm font-medium text-blue-gray-900">Nombre de la Mascota</label>
-        <input type="text" [(ngModel)]="cita.mascota" placeholder="Nombre del paciente"
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+        <input type="text"  placeholder="Nombre del paciente"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          [value]="mascota()?.nombre" readonly
+          #txtmascota>
       </div>
       <div class="w-full">
         <label class="block mb-2 text-sm font-medium text-blue-gray-900">Estado de Cita</label>
-        <select [(ngModel)]="cita.estado" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
+        <select [(ngModel)]="cita().estado" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
           @for (estado of estadosCita; track estado) {
             <option [value]="estado">{{estado}}</option>
           }
@@ -31,27 +36,33 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
         <label class="block mb-2 text-sm font-medium text-blue-gray-900">Fecha de Cita</label>
-        <input type="date" [(ngModel)]="cita.fecha"
+        <input type="date" [(ngModel)]="cita().fechaHora"
           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
       </div>
       <div>
         <label class="block mb-2 text-sm font-medium text-blue-gray-900">Área</label>
-        <select [(ngModel)]="cita.area" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
+        <select [(ngModel)]="cita().idArea" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
           <option value="" disabled>Seleccione área</option>
-          @for (item of areaslist(); track item.nomArea) {
-            <option [value]="item.nomArea">{{item.nomArea}}</option>
+          @for (item of areaslist(); track item.id) {
+            <option [value]="item.id">{{item.nomArea}}</option>
           }
         </select>
       </div>
+      @if (cita().estado === estadosCita.at(1)) {
+        
       <div>
         <label class="block mb-2 text-sm font-medium text-blue-gray-900">Veterinario</label>
-        <select [(ngModel)]="cita.veterinario" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
+        <select [(ngModel)]="cita().idVeterinario" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
           <option value="" disabled>Asignar médico</option>
           @for (vet of personalist(); track vet.id) {
-            <option [value]="vet.id">{{vet.apellidoPersonal}}</option>
+
+            @if (cita().idArea == vet.idArea) {
+              <option [value]="vet.id">{{vet.nombrePersonal}}</option>
+            }
           }
         </select>
       </div>
+    }
     </div>
 
     <hr class="my-4 border-gray-200">
@@ -62,9 +73,11 @@
       <div class="flex flex-col md:flex-row gap-4 items-end mb-6">
         <div class="flex-grow">
           <label class="block mb-2 text-sm font-medium text-blue-gray-900">Seleccionar Servicio</label>
-          <select [(ngModel)]="servicioActual.nombre" class="w-full p-3 border border-gray-300 rounded-lg bg-white outline-none">
+          <select [(ngModel)]="servicioActual.id" class="w-full p-3 border border-gray-300 rounded-lg bg-white outline-none">
             @for ( s of servicioslist(); track s.nombre) {
-              <option [value]="s.nombre">{{s.nombre}} (S/ {{s.precio}})</option>
+              @if (cita().idArea == s.codigoArea) {
+              <option [value]="s.id" id={{s.id}} >{{s.nombre}} (S/ {{s.precio}})</option>
+              }
             }
           </select> 
         </div>
@@ -79,7 +92,7 @@
         </button>
       </div>
 
-      @if (serviciosSeleccionados.length > 0) {
+      @if (serviciosSeleccionados().length > 0) {
         <div class="overflow-x-auto">
           <table class="w-full text-left">
             <thead>
@@ -92,14 +105,14 @@
               </tr>
             </thead>
             <tbody class="text-gray-700">
-              @for (item of serviciosSeleccionados; track item.id) {
+              @for (item of serviciosSeleccionados(); track item.idServicio) {
                 <tr class="border-t border-gray-200">
-                  <td class="py-3">{{item.nombre}}</td>
-                  <td class="py-3">S/ {{item.precio}}</td>
+                  <td class="py-3">{{item.idServicio}}</td>
+                  <td class="py-3">S/ {{item.precioBase}}</td>
                   <td class="py-3">{{item.cantidad}}</td>
-                  <td class="py-3 font-semibold">S/ {{item.precio * item.cantidad}}</td>
+                  <td class="py-3 font-semibold">S/ {{item.precioBase * item.cantidad}}</td>
                   <td class="py-3 text-right">
-                    <button (click)="eliminarServicio(item.id)" class="text-red-500 hover:text-red-700">
+                    <button (click)="eliminarServicio(item.idServicio)" class="text-red-500 hover:text-red-700">
                       Eliminar
                     </button>
                   </td>
