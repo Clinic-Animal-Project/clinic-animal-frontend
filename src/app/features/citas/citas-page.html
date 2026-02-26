@@ -1,0 +1,124 @@
+<section class="px-8 py-12 container mx-auto">
+  <div class="mb-8">
+    <h5 class="text-2xl font-bold text-blue-gray-900">Registro de Cita Médica</h5>
+    <p class="text-sm text-gray-600 font-normal mt-1">
+      Complete la información para programar la atención veterinaria.
+    </p>
+  </div>
+
+  <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="w-full">
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Dueño / Cliente</label>
+        <input type="text" [(ngModel)]="cita.cliente" placeholder="Nombre del dueño"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+      </div>
+      <div class="w-full">
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Nombre de la Mascota</label>
+        <input type="text" [(ngModel)]="cita.mascota" placeholder="Nombre del paciente"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      <div class="w-full">
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Estado de Cita</label>
+        <select [(ngModel)]="cita.estado" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
+          @for (estado of estadosCita; track estado) {
+            <option [value]="estado">{{estado}}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Fecha de Cita</label>
+        <input type="date" [(ngModel)]="cita.fecha"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      <div>
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Área</label>
+        <select [(ngModel)]="cita.area" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
+          <option value="" disabled>Seleccione área</option>
+          @for (item of areaslist(); track item.nomArea) {
+            <option [value]="item.nomArea">{{item.nomArea}}</option>
+          }
+        </select>
+      </div>
+      <div>
+        <label class="block mb-2 text-sm font-medium text-blue-gray-900">Veterinario</label>
+        <select [(ngModel)]="cita.veterinario" class="w-full p-3 border border-gray-300 rounded-lg outline-none bg-white">
+          <option value="" disabled>Asignar médico</option>
+          @for (vet of personalist(); track vet.id) {
+            <option [value]="vet.id">{{vet.apellidoPersonal}}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <hr class="my-4 border-gray-200">
+
+    <div class="bg-gray-50 p-6 rounded-xl border border-dashed border-gray-400">
+      <h6 class="text-lg font-semibold text-blue-gray-800 mb-4">Detalle de Servicios</h6>
+      
+      <div class="flex flex-col md:flex-row gap-4 items-end mb-6">
+        <div class="flex-grow">
+          <label class="block mb-2 text-sm font-medium text-blue-gray-900">Seleccionar Servicio</label>
+          <select [(ngModel)]="servicioActual.nombre" class="w-full p-3 border border-gray-300 rounded-lg bg-white outline-none">
+            @for ( s of servicioslist(); track s.nombre) {
+              <option [value]="s.nombre">{{s.nombre}} (S/ {{s.precio}})</option>
+            }
+          </select> 
+        </div>
+        <div class="w-full md:w-32">
+          <label class="block mb-2 text-sm font-medium text-blue-gray-900">Cant.</label>
+          <input type="number" [(ngModel)]="servicioActual.cantidad" min="1"
+            class="w-full p-3 border border-gray-300 rounded-lg outline-none">
+        </div>
+        <button (click)="agregarServicio()" 
+          class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+          Agregar
+        </button>
+      </div>
+
+      @if (serviciosSeleccionados.length > 0) {
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="text-blue-gray-400 text-sm uppercase">
+                <th class="pb-3 font-medium">Servicio</th>
+                <th class="pb-3 font-medium">Precio</th>
+                <th class="pb-3 font-medium">Cant.</th>
+                <th class="pb-3 font-medium">Subtotal</th>
+                <th class="pb-3"></th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-700">
+              @for (item of serviciosSeleccionados; track item.id) {
+                <tr class="border-t border-gray-200">
+                  <td class="py-3">{{item.nombre}}</td>
+                  <td class="py-3">S/ {{item.precio}}</td>
+                  <td class="py-3">{{item.cantidad}}</td>
+                  <td class="py-3 font-semibold">S/ {{item.precio * item.cantidad}}</td>
+                  <td class="py-3 text-right">
+                    <button (click)="eliminarServicio(item.id)" class="text-red-500 hover:text-red-700">
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <div class="mt-4 text-right">
+            <span class="text-xl font-bold text-blue-gray-900">Total: S/ {{totalCita}}</span>
+          </div>
+        </div>
+      }
+
+    </div>
+
+    <div class="flex justify-end mt-6">
+      <button class="bg-gray-900 text-white px-10 py-3 rounded-lg font-bold hover:shadow-lg active:scale-95 transition-all">
+        GUARDAR CITA
+      </button>
+    </div>
+  </div>
+</section>
