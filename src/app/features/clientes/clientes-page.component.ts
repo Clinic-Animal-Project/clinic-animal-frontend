@@ -21,6 +21,9 @@ private cdr = inject(ChangeDetectorRef);
   private clientService = inject(ClientService);
   private zone = inject(NgZone);
 nombreBusqueda: string = '';
+toastVisible = false;  // Controla la animación
+toastEnDOM = false; // controla si el div está en el DOM
+
   clientes: Client[] = [];
   mascotas: Mascota [] = [];
 clienteId!: number; // variable enlazada al input
@@ -140,10 +143,26 @@ this.mostrarMensaje('Mascota y cliente guardados correctamente 🐾', 'success')
 mostrarMensaje(mensaje: string, tipo: 'success' | 'error' = 'success') {
   this.mensajeToast = mensaje;
   this.tipoToast = tipo;
-  this.mostrarToast = true;
 
+  // Mostrar el toast
+  this.mostrarToast = true;
+  // asegurar que el DOM se actualice antes de activar la clase de entrada
+  this.cdr.detectChanges();
+
+  // Activar animación fade-in (usar un frame corto para garantizar que
+  // el navegador registre el estado inicial antes de la transición)
   setTimeout(() => {
-    this.mostrarToast = false;
-  }, 100);
+    this.toastVisible = true;
+    this.cdr.detectChanges();
+  }, 40);
+
+  // Después de 3s, iniciar fade-out
+  setTimeout(() => {
+    this.toastVisible = false;
+    this.cdr.detectChanges();
+
+    // Después de la transición (500ms), ocultar del DOM
+    setTimeout(() => this.mostrarToast = false, 500);
+  }, 3000);
 }
 }
