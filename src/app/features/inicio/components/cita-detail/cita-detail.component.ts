@@ -1,3 +1,4 @@
+
 import { ChangeDetectionStrategy, Component, computed, inject, Input, signal } from '@angular/core';
 import { CitasResponse, EstadoCita } from 'src/app/features/citas/model/citas.model';
 import { CitasService } from 'src/app/features/citas/service/citas.service';
@@ -16,6 +17,7 @@ export class CitaDetailComponent {
 
   cita = signal<CitasResponse | null>(null);
 
+
   // Definimos el orden lógico de los estados para Clinicanimal
   private flujoEstados: Record<string, { etiqueta: EstadoCita, siguiente: EstadoCita }> = {
     'PROGRAMADA': { etiqueta: EstadoCita.PROGRAMADA, siguiente: EstadoCita.EN_COLA },
@@ -29,7 +31,7 @@ export class CitaDetailComponent {
     const estadoActual = this.cita()?.estado;
     return estadoActual ? this.flujoEstados[estadoActual] : null;
   });
-  
+
   ngOnInit(): void {
     if (this.id) {
       this.obtenerDetalleCita();
