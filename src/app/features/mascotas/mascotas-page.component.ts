@@ -28,7 +28,9 @@ private clientService = inject(ClientService);
 nombreBusqueda: string = '';
 mascotaPendiente: Mascota | null = null;
 clientePendiente: ClienteSeleccion | null = null;modalSobreescribir = false; 
-
+mostrarToast = false;
+mensajeToast = '';
+tipoToast: 'success' | 'error' = 'success';
 
 ngOnInit(): void {
   this.buscarPorNombre(); // carga todo al abrir
@@ -106,6 +108,7 @@ this.clientePendiente = {
 
   localStorage.setItem('mascotaSeleccionada', JSON.stringify(mascotaData));
   localStorage.setItem('clienteSeleccionado', JSON.stringify(clienteData));
+  this.mostrarMensaje('Mascota y cliente guardados correctamente 🐾', 'success');
 
   console.log("🐶 Mascota guardada 👉", mascotaData);
   console.log("👤 Cliente guardado 👉", clienteData);
@@ -136,10 +139,19 @@ cerrarModal() {
 
     localStorage.setItem('mascotaSeleccionada', JSON.stringify(mascotaData));
     localStorage.setItem('clienteSeleccionado', JSON.stringify(clienteData));
+    this.mostrarMensaje('Mascota y cliente guardados correctamente 🐾', 'success');
 
     console.log("✅ Selección sobreescrita 👉", mascotaData);
 
     this.cerrarModal();
   }
+mostrarMensaje(mensaje: string, tipo: 'success' | 'error' = 'success') {
+  this.mensajeToast = mensaje;
+  this.tipoToast = tipo;
+  this.mostrarToast = true;
 
+  setTimeout(() => {
+    this.mostrarToast = false;
+  }, 100);
+}
 }

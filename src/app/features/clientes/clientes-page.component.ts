@@ -29,6 +29,9 @@ mostrarModal = false;
 mascotaPendiente: Mascota | null = null;
 clientePendiente: Client | null = null;
 modalSobreescribir = false; 
+mostrarToast = false;
+mensajeToast = '';
+tipoToast: 'success' | 'error' = 'success';
 ngOnInit(): void {
   this.buscarPorNombre(); // carga todo al abrir
 
@@ -99,7 +102,7 @@ guardarSeleccion(mascota: Mascota, cliente: Client | null) {
 
 localStorage.setItem('mascotaSeleccionada', JSON.stringify(mascotaData));
 localStorage.setItem('clienteSeleccionado', JSON.stringify(clienteData));
-
+this.mostrarMensaje('Mascota y cliente guardados correctamente 🐾', 'success');
   console.log("Mascota guardada 👉", mascotaData);
 }
 
@@ -124,14 +127,23 @@ aceptarSobreescripcion() {
   // 🔥 reemplazar storage
   localStorage.setItem('mascotaSeleccionada', JSON.stringify(mascotaData));
   localStorage.setItem('clienteSeleccionado', JSON.stringify(clienteData));
-
+this.mostrarMensaje('Mascota y cliente guardados correctamente 🐾', 'success');
   console.log("✅ Selección sobreescrita 👉", mascotaData);
 
   // limpiar temporales y cerrar modal
   this.mascotaPendiente = null;
   this.clientePendiente = null;
   this.modalSobreescribir = false;
+
 }
 
+mostrarMensaje(mensaje: string, tipo: 'success' | 'error' = 'success') {
+  this.mensajeToast = mensaje;
+  this.tipoToast = tipo;
+  this.mostrarToast = true;
 
+  setTimeout(() => {
+    this.mostrarToast = false;
+  }, 100);
+}
 }
