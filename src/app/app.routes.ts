@@ -20,9 +20,8 @@ export const routes: Routes = [
       // Inicio
       {
         path: '',
-        pathMatch: 'full',
-        loadComponent: () => import('./features/inicio/inicio.component')
-          .then(m => m.InicioComponent)
+        loadChildren: () => import('./features/inicio/inicio.routes')
+          .then(m => m.INICO_CRUD_ROUTES)
       },
       // Clientes
       {

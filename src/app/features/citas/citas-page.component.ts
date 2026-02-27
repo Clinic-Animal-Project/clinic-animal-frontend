@@ -95,6 +95,22 @@ export class CitasPageComponent {
   cerrarYRegresar() {
       this.mostrarModal.set(false);
       // Lógica para limpiar el formulario o navegar al inicio
+      this.cita.set({
+        idCliente: 0,
+        idMascota: 0,
+        fechaHora: '',
+        idArea: 0,
+        idVeterinario: null,
+        estado: EstadoCita.PROGRAMADA,
+        servicios: []
+      });
+      this.serviciosSeleccionados.set([]);
+
+      // Limpiar cliente y mascota seleccionados
+      this.cliente.set(null);
+      this.mascota.set(null);
+      localStorage.removeItem('clienteSeleccionado');
+      localStorage.removeItem('mascotaSeleccionada');
   }
   loadClienteAndMascota() {
     // Simulación de carga de cliente y mascota

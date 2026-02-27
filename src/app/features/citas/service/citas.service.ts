@@ -20,6 +20,12 @@ export class CitasService {
       return this.http.get<ApiResponse<CitasResponse[]>>(this.apiUrl);
   }
 
+  obtenerPorId(id: number): Observable<CitasResponse> {
+    return this.http.get<ApiResponse<CitasResponse>>(`${this.apiUrl}/${id}`).pipe(
+      map(resp => resp.data as CitasResponse)
+    );
+  }
+
   listarPorEstados(estado:EstadoCita): Observable<CitasResponse[]> {
       return this.http.get<ApiResponse<CitasResponse[]>>(`${this.apiUrl}/estado`,{params: {estado}}).pipe(
         map(resp => resp.data ?? [])
