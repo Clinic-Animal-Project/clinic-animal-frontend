@@ -5,6 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { Mascota } from '../mascotas/models/mascotas.models';
 import { MascotaService } from './services/mascotas.services';
 import { ClientService } from '../clientes/service/client-service';
+import { Client } from '../clientes/model/client-model';
+
+type ClienteSeleccion = {
+  id: number;
+  nombre: string;
+};
 
 @Component({
   selector: 'app-mascotas-page',
@@ -12,6 +18,7 @@ import { ClientService } from '../clientes/service/client-service';
   imports: [CommonModule, FormsModule], // <-- agregar FormsModule
   templateUrl: './mascotas-page.html'
 })
+
 export class MascotasPageComponent {
   mascotas: Mascota [] = [];
 private cdr = inject(ChangeDetectorRef);
@@ -19,6 +26,11 @@ private clientService = inject(ClientService);
   private mascotaService = inject(MascotaService);
   private zone = inject(NgZone);
 nombreBusqueda: string = '';
+mascotaPendiente: Mascota | null = null;
+clientePendiente: ClienteSeleccion | null = null;modalSobreescribir = false; 
+mostrarToast = false;
+mensajeToast = '';
+tipoToast: 'success' | 'error' = 'success';
 
 ngOnInit(): void {
   this.buscarPorNombre(); // carga todo al abrir
@@ -70,7 +82,15 @@ guardarSeleccion(mascota: Mascota) {
 
   const existeMascota = localStorage.getItem('mascotaSeleccionada');
   if (existeMascota) {
-    alert("⚠️ Ya hay una mascota seleccionada. Debes quitarla primero.");
+    // 👉 guardar temporalmente lo nuevo
+    this.mascotaPendiente = mascota;
+
+this.clientePendiente = {
+  id: mascota.idCliente!,
+  nombre: mascota.nombreCliente!
+};
+
+    this.abrirModalSobreescribir();
     return;
   }
 
@@ -88,9 +108,50 @@ guardarSeleccion(mascota: Mascota) {
 
   localStorage.setItem('mascotaSeleccionada', JSON.stringify(mascotaData));
   localStorage.setItem('clienteSeleccionado', JSON.stringify(clienteData));
+  this.mostrarMensaje('Mascota y cliente guardados correctamente 🐾', 'success');
 
   console.log("🐶 Mascota guardada 👉", mascotaData);
   console.log("👤 Cliente guardado 👉", clienteData);
 }
 
+abrirModalSobreescribir(){
+  this.modalSobreescribir = true;
+}
+
+cerrarModal() {
+  this.modalSobreescribir = false;
+  this.mascotaPendiente = null;
+  this.clientePendiente = null;
+}
+
+ aceptarSobreescripcion() {
+    if (!this.mascotaPendiente || !this.clientePendiente) return;
+
+    const mascotaData = {
+      id: this.mascotaPendiente.id,
+      nombre: this.mascotaPendiente.nombre
+    };
+
+    const clienteData = {
+      id: this.clientePendiente.id,
+      nombre: this.clientePendiente.nombre
+    };
+
+    localStorage.setItem('mascotaSeleccionada', JSON.stringify(mascotaData));
+    localStorage.setItem('clienteSeleccionado', JSON.stringify(clienteData));
+    this.mostrarMensaje('Mascota y cliente guardados correctamente 🐾', 'success');
+
+    console.log("✅ Selección sobreescrita 👉", mascotaData);
+
+    this.cerrarModal();
+  }
+mostrarMensaje(mensaje: string, tipo: 'success' | 'error' = 'success') {
+  this.mensajeToast = mensaje;
+  this.tipoToast = tipo;
+  this.mostrarToast = true;
+
+  setTimeout(() => {
+    this.mostrarToast = false;
+  }, 100);
+}
 }

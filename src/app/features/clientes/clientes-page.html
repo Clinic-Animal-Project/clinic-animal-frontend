@@ -58,56 +58,174 @@
       </tbody>
     </table>
   </div>
-
+  </div>
+<!-- MODAL 1 -->
 <div *ngIf="mostrarModal"
-     class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
 
-  <!-- contenedor del modal -->
-  <div class="bg-white rounded-2xl shadow-2xl w-10/12 max-w-4xl p-10 relative transition-transform transform scale-100
-              hover:shadow-3xl hover:brightness-95">
-              
+<!-- contenedor del modal -->
+<div class="bg-white rounded-3xl shadow-2xl w-11/12 max-w-3xl 
+            p-12 relative transition-all duration-300 overflow-hidden">
+
     <!-- botón cerrar -->
     <button (click)="cerrarModal()"
-            class="absolute top-6 right-6 text-[var(--color-dark-500)] hover:text-red-500 text-2xl font-bold">
+            class="absolute top-6 right-6 text-[var(--color-dark-500)] hover:text-red-500 text-2xl font-bold transition">
       ✕
     </button>
 
-    <!-- TITULO -->
-    <div class="text-center mb-6">
-      <h2 class="text-4xl font-extrabold text-[var(--color-dark-700)]">Cliente seleccionado</h2>
-      <p class="text-2xl text-[var(--color-dark-700)] font-semibold">
-        {{ clienteSeleccionado?.nombre }} {{ clienteSeleccionado?.apellido }}
-      </p>
-      <p class="text-xl text-[var(--color-dark-500)]">DNI: {{ clienteSeleccionado?.dni }}</p>
-    </div>
+    <!-- CONTENIDO GENERAL -->
+<div class="space-y-12">
+      <!-- TITULO -->
+      <div class="text-center space-y-3">
+        <h2 class="text-4xl font-extrabold text-[var(--color-dark-700)]">
+          Cliente seleccionado
+        </h2>
 
-    <!-- MASCOTAS -->
-    <div class="space-y-6 max-h-96 overflow-y-auto">
-      <h3 class="font-bold text-[var(--color-dark-700)] text-2xl">Mascotas ({{ mascotas.length }})</h3>
+        <p class="text-2xl text-[var(--color-dark-700)] font-semibold">
+          {{ clienteSeleccionado?.nombre }} {{ clienteSeleccionado?.apellido }}
+        </p>
 
-      <div *ngIf="mascotas.length === 0" class="text-[var(--color-dark-400)] text-lg">
-        Este cliente no tiene mascotas registradas
+        <p class="text-xl text-[var(--color-dark-500)]">
+          DNI: {{ clienteSeleccionado?.dni }}
+        </p>
       </div>
 
-      <div *ngFor="let m of mascotas"
-           class="bg-[var(--color-primary-50)] p-6 rounded-2xl flex items-center justify-between 
-                  hover:shadow-lg hover:bg-[var(--color-primary-100)] transition duration-200">
+      <!-- MASCOTAS -->
+<div class="space-y-6 max-h-[60vh] overflow-y-auto mt-4">
+      <h3 class="font-bold text-[var(--color-dark-700)] text-2xl !ml-8">
+        Mascotas ({{ mascotas.length }})
+      </h3>
 
-        <!-- info mascota -->
-        <div class="flex-1 min-w-0 space-y-1">
-          <p class="font-bold text-2xl text-[var(--color-primary-600)]">🐾 {{ m.nombre }}</p>
-          <p class="text-[var(--color-dark-500)] text-lg">{{ m.especie }} - {{ m.raza }}</p>
-          <p class="text-[var(--color-dark-500)] text-lg">Edad: {{ m.edad }} | Sexo: {{ m.sexo }}</p>
+        <div *ngIf="mascotas.length === 0"
+             class="text-[var(--color-dark-400)] text-lg bg-[var(--color-dark-100)] p-6 rounded-xl">
+          Este cliente no tiene mascotas registradas
         </div>
 
-        <!-- botón seleccionar -->
-        <button (click)="guardarSeleccion(m, clienteSeleccionado)"
-                class="bg-[var(--color-primary-600)] text-white px-12 py-5 text-lg rounded-xl
-                       hover:bg-[var(--color-primary-700)] transition duration-200 font-semibold shadow-md hover:shadow-xl">
-          Seleccionar
-        </button>
+        <div *ngFor="let m of mascotas"
+             class="bg-[var(--color-primary-50)] p-8 rounded-2xl flex items-center justify-between 
+                    hover:shadow-lg hover:bg-[var(--color-primary-100)] transition duration-200">
+
+          <!-- info mascota -->
+          <div class="flex-1 min-w-0 space-y-2 !pl-5">
+            <p class="font-bold text-2xl text-[var(--color-primary-600)]">
+              🐾 {{ m.nombre }}
+            </p>
+            <p class="text-[var(--color-dark-500)] text-lg">
+              {{ m.especie }} - {{ m.raza }}
+            </p>
+            <p class="text-[var(--color-dark-500)] text-lg">
+              Edad: {{ m.edad }} | Sexo: {{ m.sexo }}
+            </p>
+          </div>
+
+          <!-- botón seleccionar -->
+          <button (click)="guardarSeleccion(m, clienteSeleccionado)"
+                  class="bg-[var(--color-primary-600)] text-white px-12 py-5 text-lg rounded-xl !mr-4
+                         hover:bg-[var(--color-primary-700)] transition duration-200 
+                         font-semibold shadow-md hover:shadow-xl">
+            Seleccionar
+          </button>
+
+        </div>
+
       </div>
+
     </div>
   </div>
 </div>
+<!-- MODAL 2 VERDE -->
+<div *ngIf="modalSobreescribir"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+
+  <!-- contenedor del modal -->
+  <div class="bg-[var(--color-primary-50)] 
+              border-2 border-[var(--color-primary-300)]
+              rounded-3xl shadow-2xl w-11/12 max-w-2xl p-12 relative 
+              transition-all duration-300 transform scale-100">
+
+    <!-- botón cerrar -->
+    <button (click)="modalSobreescribir = false"
+            class="absolute top-6 right-6 text-[var(--color-primary-600)] 
+                   hover:text-red-500 text-2xl font-bold transition">
+      ✕
+    </button>
+
+    <!-- Icono + título -->
+    <div class="text-center space-y-6">
+
+      <div class="text-6xl">
+        ⚠️
+      </div>
+
+      <h2 class="text-4xl font-extrabold text-[var(--color-primary-700)]">
+        Sobreescribir selección
+      </h2>
+
+      <p class="text-xl text-[var(--color-primary-800)] leading-relaxed">
+        Ya existe una mascota seleccionada.
+        <br>
+        ¿Deseas reemplazarla por:
+      </p>
+
+      <!-- Datos nuevos -->
+      <div class="bg-white rounded-2xl p-6 shadow-inner border border-[var(--color-primary-200)]">
+        <p class="text-2xl font-bold text-[var(--color-primary-600)]">
+          🐾 {{ mascotaPendiente?.nombre }}
+        </p>
+
+        <p class="text-xl text-[var(--color-primary-700)] leading-relaxed mt-2">
+          De dueño :
+        </p>
+
+        <p class="text-lg text-[var(--color-dark-600)]">
+          {{ clientePendiente?.nombre }}
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Botones -->
+    <div class="flex justify-center gap-8 mt-10">
+
+      <!-- Cancelar -->
+      <button (click)="modalSobreescribir = false"
+              class="px-10 py-4 text-lg rounded-2xl border-2 
+                     border-[var(--color-primary-400)] 
+                     text-[var(--color-primary-700)]
+                     hover:bg-[var(--color-primary-100)] 
+                     transition duration-200 font-semibold">
+        Cancelar
+      </button>
+
+      <!-- Aceptar -->
+      <button (click)="aceptarSobreescripcion()"
+              class="px-10 py-4 text-lg rounded-2xl 
+                     bg-[var(--color-primary-600)] text-white
+                     hover:bg-[var(--color-primary-700)]
+                     transition duration-200 font-semibold shadow-md hover:shadow-xl">
+        Sí, reemplazar
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="mostrarToast"
+     class="fixed bottom-6 right-6 z-[9999] animate-fade-in">
+
+  <div class="px-6 py-4 rounded-2xl shadow-2xl text-white font-semibold
+              flex items-center gap-3"
+       [ngClass]="{
+         'bg-green-500': tipoToast === 'success',
+         'bg-red-500': tipoToast === 'error'
+       }">
+
+    <span class="text-xl">
+      {{ tipoToast === 'success' ? '✅' : '⚠️' }}
+    </span>
+
+    <span class="text-lg">{{ mensajeToast }}</span>
+  </div>
+
 </div>

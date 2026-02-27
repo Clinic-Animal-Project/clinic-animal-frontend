@@ -26,6 +26,12 @@ nombreBusqueda: string = '';
 clienteId!: number; // variable enlazada al input
 clienteSeleccionado: Client | null = null;
 mostrarModal = false;
+mascotaPendiente: Mascota | null = null;
+clientePendiente: Client | null = null;
+modalSobreescribir = false; 
+mostrarToast = false;
+mensajeToast = '';
+tipoToast: 'success' | 'error' = 'success';
 ngOnInit(): void {
   this.buscarPorNombre(); // carga todo al abrir
 
@@ -36,8 +42,6 @@ ngOnInit(): void {
 
 ngOnDestroy() {
   console.log("💀 COMPONENTE DESTRUIDO");
-  sessionStorage.removeItem('clienteSeleccionado');
-  sessionStorage.removeItem('mascotasDelCliente');
 }
 
 abrirModal(cliente: Client) {
@@ -51,6 +55,9 @@ abrirModal(cliente: Client) {
 cerrarModal() {
   this.mostrarModal = false;
   this.clienteSeleccionado = null;
+    this.mascotaPendiente = null;
+  this.clientePendiente = null;
+  this.modalSobreescribir = false; // Reiniciar estado del modal de sobreescritura
   this.mascotas = []; // Limpiar mascotas al cerrar el modal
 }
 
@@ -73,10 +80,13 @@ buscarMascotaPorIdCliente(id: number) {
 
 guardarSeleccion(mascota: Mascota, cliente: Client | null) {
   if (!cliente) return;
-  const existeSeleccion = sessionStorage.getItem('mascotaSeleccionada');
+  const existeSeleccion = localStorage.getItem('mascotaSeleccionada');
 
   if (existeSeleccion) {
-    alert("⚠️ Ya hay una mascota seleccionada. Debes quitarla primero.");
+        this.mascotaPendiente = mascota;
+    this.clientePendiente = cliente;
+
+    this.sobreescribirSeleccion();
     return;
   }
 
@@ -92,7 +102,48 @@ guardarSeleccion(mascota: Mascota, cliente: Client | null) {
 
 localStorage.setItem('mascotaSeleccionada', JSON.stringify(mascotaData));
 localStorage.setItem('clienteSeleccionado', JSON.stringify(clienteData));
-
+this.mostrarMensaje('Mascota y cliente guardados correctamente 🐾', 'success');
   console.log("Mascota guardada 👉", mascotaData);
+}
+
+
+sobreescribirSeleccion() {
+  this.modalSobreescribir = true;
+}
+
+aceptarSobreescripcion() {
+  if (!this.mascotaPendiente || !this.clientePendiente) return;
+
+  const mascotaData = {
+    id: this.mascotaPendiente.id,
+    nombre: this.mascotaPendiente.nombre
+  };
+
+  const clienteData = {
+    id: this.clientePendiente.id,
+    nombre: this.clientePendiente.nombre
+  };
+
+  // 🔥 reemplazar storage
+  localStorage.setItem('mascotaSeleccionada', JSON.stringify(mascotaData));
+  localStorage.setItem('clienteSeleccionado', JSON.stringify(clienteData));
+this.mostrarMensaje('Mascota y cliente guardados correctamente 🐾', 'success');
+  console.log("✅ Selección sobreescrita 👉", mascotaData);
+
+  // limpiar temporales y cerrar modal
+  this.mascotaPendiente = null;
+  this.clientePendiente = null;
+  this.modalSobreescribir = false;
+
+}
+
+mostrarMensaje(mensaje: string, tipo: 'success' | 'error' = 'success') {
+  this.mensajeToast = mensaje;
+  this.tipoToast = tipo;
+  this.mostrarToast = true;
+
+  setTimeout(() => {
+    this.mostrarToast = false;
+  }, 100);
 }
 }
