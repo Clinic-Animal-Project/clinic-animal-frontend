@@ -55,6 +55,11 @@ export const routes: Routes = [
             path: 'mascotas',
             loadChildren: () => import('./features/crud/mascotas/mascotas.routes')
               .then(m => m.MASCOTAS_CRUD_ROUTES)
+          },
+          {
+            path: 'personal',
+            loadChildren: () => import('./features/crud/personal/personal.routes')
+              .then(m => m.PERSONAL_CRUD_ROUTES)
           }
         ]
       }

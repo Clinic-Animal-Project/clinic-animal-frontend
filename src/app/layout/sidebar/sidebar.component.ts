@@ -115,6 +115,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
                 </svg>
                 Mascotas
               </a>
+              <a
+                routerLink="/mantenimiento/personal"
+                routerLinkActive="bg-white/20 text-white"
+                class="flex items-center gap-2 py-2.5 text-primary-200 hover:bg-white/10 hover:text-white rounded-lg transition-all duration-200 text-sm font-medium" style="padding-left: 1rem; padding-right: 1rem;">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121A3 3 0 1 0 9.88 9.88a3 3 0 0 0 4.242 4.242zM5 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm14 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM5 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                </svg>
+                Personal
+              </a>
             </div>
           }
         </div>

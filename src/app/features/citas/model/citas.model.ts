@@ -41,6 +41,7 @@ export interface CitaServicioResponseDto {
 export enum EstadoCita {
     PROGRAMADA = 'PROGRAMADA',
     EN_COLA = 'EN_COLA',
+    EN_PROGRESO = 'EN_PROGRESO',
     FINALIZADA = 'FINALIZADA',
     CANCELADA = 'CANCELADA',
     PAGADA = 'PAGADA'
