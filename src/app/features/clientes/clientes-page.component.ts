@@ -5,7 +5,7 @@ import { Client } from '../../features/clientes/model/client-model';
 import { ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Mascota } from '../mascotas/models/mascotas.models';
-
+import { ClienteRequestDto } from '../../features/clientes/model/client-model';
 
 
 @Component({
@@ -24,6 +24,14 @@ nombreBusqueda: string = '';
 toastVisible = false;  // Controla la animación
 toastEnDOM = false; // controla si el div está en el DOM
 
+  nuevoCliente: ClienteRequestDto = {
+    nombre: '',
+    apellido:'',
+    dni: '',
+    telefono: '',
+    direccion: '',
+    email: ''
+  };
   clientes: Client[] = [];
   mascotas: Mascota [] = [];
 clienteId!: number; // variable enlazada al input
@@ -34,6 +42,8 @@ clientePendiente: Client | null = null;
 modalSobreescribir = false; 
 mostrarToast = false;
 mensajeToast = '';
+errores: any = {};
+modalCrear = false;
 tipoToast: 'success' | 'error' = 'success';
 ngOnInit(): void {
   this.buscarPorNombre(); // carga todo al abrir
@@ -60,7 +70,8 @@ cerrarModal() {
   this.clienteSeleccionado = null;
     this.mascotaPendiente = null;
   this.clientePendiente = null;
-  this.modalSobreescribir = false; // Reiniciar estado del modal de sobreescritura
+  this.modalSobreescribir = false; 
+  this.modalCrear = false; // Reiniciar estado del modal de sobreescritura
   this.mascotas = []; // Limpiar mascotas al cerrar el modal
 }
 
@@ -164,5 +175,44 @@ mostrarMensaje(mensaje: string, tipo: 'success' | 'error' = 'success') {
     // Después de la transición (500ms), ocultar del DOM
     setTimeout(() => this.mostrarToast = false, 500);
   }, 3000);
+}
+
+registrar() {
+  this.clientService.registrarCliente(this.nuevoCliente)
+    .subscribe({
+      next: () => {
+        this.mostrarMensaje('Cliente registrado correctamente ✅', 'success');
+        this.limpiarFormulario();
+        this.buscarPorNombre(); // refrescar lista
+            this.cerrarModal(); 
+      },
+error: (error) => {
+  console.log("STATUS:", error.status);
+  console.log("ERROR OBJ:", error.error);
+
+  if (error.error?.mensaje) {
+    this.mostrarMensaje(error.error.mensaje, 'error');
+  } else {
+    this.mostrarMensaje('Error inesperado ❌', 'error');
+  }
+}
+    });
+}
+
+limpiarFormulario() {
+  this.nuevoCliente = {
+    nombre: '',
+    apellido: '',
+    dni: '',
+    telefono: '',
+    direccion: '',
+    email: ''
+  };
+
+  this.errores = {}; // limpia errores del backend también
+}
+
+modalCrearCliente(){
+  this.modalCrear = true;
 }
 }
