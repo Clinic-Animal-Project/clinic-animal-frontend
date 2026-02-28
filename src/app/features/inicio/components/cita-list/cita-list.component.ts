@@ -24,7 +24,7 @@ export class CitaListComponent {
     // Cada vez que cambie el estadoSeleccionado, pedimos datos al Backend
     effect(() => {
       this.cargarCitas();
-    }, { allowSignalWrites: true });
+    });
   }
 
   cargarCitas() {

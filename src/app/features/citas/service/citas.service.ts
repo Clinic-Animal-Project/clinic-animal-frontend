@@ -33,6 +33,7 @@ export class CitasService {
   }
 
   cambiarEstadoCitaEncola(id: number, idVeterinario: number): Observable<CitasResponse> {
+    console.log({id,idVeterinario})
     return this.http.patch<ApiResponse<CitasResponse>>(`${this.apiUrl}/${id}/encolar`, { idVeterinario }).pipe(
       map(resp => resp?.data as CitasResponse)
     );
