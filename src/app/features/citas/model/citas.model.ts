@@ -43,6 +43,7 @@ export enum EstadoCita {
     EN_COLA = 'EN_COLA',
     EN_PROGRESO = 'EN_PROGRESO',
     TERMINADA = 'TERMINADA',
-    CANCELADA = 'CANCELADA',
-    PAGADA = 'PAGADA'
+    PAGADA = 'PAGADA',
+    CANCELADO = 'CANCELADO',
+    
 }
