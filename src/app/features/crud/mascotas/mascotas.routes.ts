@@ -10,6 +10,16 @@ export const MASCOTAS_CRUD_ROUTES: Routes = [
         path: '',
         loadComponent: () => import('./components/mascotas-list/mascotas-list.component')
           .then(m => m.MascotasListComponent)
+      },
+      {
+        path: 'crear',
+        loadComponent: () => import('./components/mascota-form/mascotas-form.component')
+          .then(m => m.MascotaFormComponent)
+      },
+      {
+        path: 'editar/:id',
+        loadComponent: () => import('./components/mascota-form/mascotas-form.component')
+          .then(m => m.MascotaFormComponent)
       }
     ]
   }
