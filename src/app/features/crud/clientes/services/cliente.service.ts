@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { Cliente, CreateClienteDto, UpdateClienteDto } from '../models/cliente.model';
 
@@ -8,6 +8,7 @@ export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   message?: string;
+  mensaje?: string;
 }
 
 export interface PageData<T> {
@@ -32,11 +33,24 @@ export class ClienteService {
   private apiUrl = `${environment.apiUrl}/clientes`;
 
   getClientes(page: number = 0, size: number = 10): Observable<Cliente[]> {
-    return this.http.get<Cliente[]>(this.apiUrl);
+    return this.http.get<any>(this.apiUrl).pipe(
+      map(resp => {
+        // El API devuelve  { success, data: [...] }
+        if (resp && resp.data) return resp.data as Cliente[];
+        // O puede ser un array directo
+        if (Array.isArray(resp)) return resp as Cliente[];
+        return [];
+      })
+    );
   }
 
   getClienteById(id: number): Observable<Cliente> {
-    return this.http.get<Cliente>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map(resp => {
+        if (resp && resp.data) return resp.data as Cliente;
+        return resp as Cliente;
+      })
+    );
   }
 
   searchClientes(query: string): Observable<ApiResponse<Cliente[]>> {

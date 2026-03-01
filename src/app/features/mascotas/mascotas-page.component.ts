@@ -6,6 +6,7 @@ import { Mascota } from '../mascotas/models/mascotas.models';
 import { MascotaService } from './services/mascotas.services';
 import { ClientService } from '../clientes/service/client-service';
 import { Client } from '../clientes/model/client-model';
+import { MascotaRequestDto } from '../mascotas/models/mascotas.models';
 
 type ClienteSeleccion = {
   id: number;
@@ -30,14 +31,27 @@ toastEnDOM = false; // controla si el div está en el DOM
 mascotaPendiente: Mascota | null = null;
 clientePendiente: ClienteSeleccion | null = null;modalSobreescribir = false; 
 mostrarToast = false;
-mensajeToast = '';
-toastVisible = false;  // Controla la animación
+errores: any = {};
+  clientes: Client[] = [];
 
+mensajeToast = '';
+modalCrear = false;
+toastVisible = false;  // Controla la animación
+  nuevaMascota: MascotaRequestDto = {
+    nombre: '',
+    especie:'',
+    raza: '',
+    edad: '',
+    sexo: '',
+    idCliente: 0
+  };
 tipoToast: 'success' | 'error' = 'success';
 
 ngOnInit(): void {
   this.buscarPorNombre(); // carga todo al abrir
-
+this.clientService.listarClientes('').subscribe(data => {
+  this.clientes = data;
+});
 }
   constructor() {
   console.log("🔥 COMPONENTE CREADO");
@@ -125,6 +139,7 @@ cerrarModal() {
   this.modalSobreescribir = false;
   this.mascotaPendiente = null;
   this.clientePendiente = null;
+  this.modalCrear = false;
 }
 
  aceptarSobreescripcion() {
@@ -172,5 +187,44 @@ mostrarMensaje(mensaje: string, tipo: 'success' | 'error' = 'success') {
     // Después de la transición (500ms), ocultar del DOM
     setTimeout(() => this.mostrarToast = false, 500);
   }, 3000);
+}
+
+
+registrar() {
+  this.mascotaService.registrarMascota(this.nuevaMascota)
+    .subscribe({
+      next: () => {
+        this.mostrarMensaje('Mascota registrada correctamente  ✅', 'success');
+        this.limpiarFormulario();
+        this.buscarPorNombre(); // refrescar lista
+        this.cerrarModal(); 
+      },
+error: (error) => {
+  console.log("STATUS:", error.status);
+  console.log("ERROR OBJ:", error.error);
+
+  if (error.error?.mensaje) {
+    this.mostrarMensaje(error.error.mensaje, 'error');
+  } else {
+    this.mostrarMensaje('Error inesperado ❌', 'error');
+  }
+}
+    });
+}
+modalCrearMascota(){
+  this.modalCrear = true;
+}
+
+limpiarFormulario() {
+  this.nuevaMascota = {
+    nombre: '',
+    especie:'',
+    raza: '',
+    edad: '',
+    sexo: '',
+    idCliente: 0
+  };
+
+  this.errores = {}; // limpia errores del backend también
 }
 }

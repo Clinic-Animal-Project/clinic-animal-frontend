@@ -1,65 +1,111 @@
 <div class="p-11 bg-[var(--color-dark-50)] min-h-screen">
   <h1 class="text-4xl md:text-3xl font-extrabold text-[var(--color-dark-700)] mb-8 tracking-tight">
     Clientes
-  </h1>  <!-- 🔎 BUSCADOR -->
+  </h1>
 
-<!-- input llamativo con caret visible -->
-<div class="w-full max-w-lg ml-0">
-  <input type="text"
-         [(ngModel)]="nombreBusqueda"
-         (input)="buscarPorNombre()"
-         placeholder="Buscar cliente por nombre"
-         class="w-full px-2 py-2 rounded-2xl border-2 border-[var(--color-dark-300)]
-                text-lg text-[var(--color-dark-700)] placeholder:text-[var(--color-dark-400)]
-                focus:outline-none focus:ring-4 focus:ring-[var(--color-primary-300)]
-                focus:border-[var(--color-primary-600)]
-                caret-[var(--color-primary-600)]
-                bg-[var(--color-primary-50)] hover:bg-[var(--color-primary-100)]
-                transition duration-300"
-         style="padding-left: 0.5rem; /* 24px extra para separar caret del borde */">
-</div> <br>
-  <!-- 📋 TABLA -->
+  <!-- 🔎 BUSCADOR + BOTÓN -->
+  <div class="w-full flex items-center gap-4">
+
+    <!-- 🔎 Buscador -->
+    <div class="flex-1 max-w-lg">
+      <input type="text"
+             [(ngModel)]="nombreBusqueda"
+             (input)="buscarPorNombre()"
+             placeholder="Buscar cliente por nombre"
+             class="w-full px-4 py-2 rounded-2xl border-2 border-[var(--color-dark-300)]
+                    text-lg text-[var(--color-dark-700)] placeholder:text-[var(--color-dark-400)]
+                    focus:outline-none focus:ring-4 focus:ring-[var(--color-primary-300)]
+                    focus:border-[var(--color-primary-600)]
+                    caret-[var(--color-primary-600)]
+                    bg-[var(--color-primary-50)] hover:bg-[var(--color-primary-100)]
+                    transition duration-300">
+    </div>
+
+    <!-- ➕ Botón Nuevo Cliente -->
+    <button (click)="modalCrearCliente()"
+            class="ml-auto bg-[var(--color-primary-600)] text-white px-9 py-2 rounded-2xl
+                   hover:bg-[var(--color-primary-700)] transition font-semibold shadow-md
+                   whitespace-nowrap">
+      + Nuevo Cliente
+    </button>
+
+  </div>
+
+  <br>
+
+  <!-- 📋 TABLA DE CLIENTES -->
   <div class="bg-white shadow-2xl rounded-3xl border border-[var(--color-dark-100)] overflow-x-auto animate-fade-in">
     <table class="min-w-full text-base text-left border-collapse rounded-2xl overflow-hidden">
       <thead class="bg-[var(--color-primary-600)] text-white text-sm uppercase tracking-wider">
         <tr>
-                    <th class="px-6 py-4">ID</th>
+          <th class="px-6 py-4">ID</th>
           <th class="px-6 py-4">Cliente</th>
           <th class="px-6 py-4">DNI</th>
           <th class="px-6 py-4">Teléfono</th>
           <th class="px-6 py-4">Email</th>
-          <th class="px-6 py-4 last:rounded-tr-2xl">Dirección</th>
+          <th class="px-6 py-4">Dirección</th>
+          <th class="px-6 py-4 text-center">Acciones</th>
         </tr>
       </thead>
       <tbody class="divide-y">
+
+        <!-- Estado vacío -->
+        <tr *ngIf="clientes.length === 0">
+          <td colspan="7" class="px-6 py-12 text-center text-[var(--color-dark-400)] text-lg">
+            No se encontraron clientes registrados.
+          </td>
+        </tr>
+
         <tr *ngFor="let c of clientes"
             (click)="abrirModal(c)"
+            [class.bg-green-50]="c.id === clienteDestacadoId"
+            [class.ring-2]="c.id === clienteDestacadoId"
+            [class.ring-green-400]="c.id === clienteDestacadoId"
             class="hover:bg-[var(--color-primary-50)] transition duration-300 cursor-pointer group">
+
           <td class="px-6 py-4 font-semibold text-[var(--color-dark-700)]">#{{ c.id }}</td>
+
           <td class="px-6 py-4">
             <div class="flex flex-col">
               <span class="font-semibold text-[var(--color-dark-700)] text-lg group-hover:text-[var(--color-primary-600)] transition">
                 {{ c.nombre }} {{ c.apellido }}
+                <span *ngIf="c.id === clienteDestacadoId"
+                      class="ml-2 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
+                  ¡Nuevo!
+                </span>
               </span>
               <span class="text-xs text-[var(--color-dark-400)]">Cliente registrado</span>
             </div>
           </td>
+
           <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ c.dni }}</td>
           <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ c.telefono }}</td>
           <td class="px-6 py-4 text-[var(--color-primary-600)] font-medium">{{ c.email }}</td>
           <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ c.direccion || '—' }}</td>
+
+          <!-- Botón Ver datos / Actualizar -->
+          <td class="px-6 py-4 text-center" (click)="$event.stopPropagation()">
+            <button (click)="abrirModalEditar(c, $event)"
+                    class="inline-flex items-center gap-2 bg-[var(--color-primary-600)] text-white
+                           px-4 py-2 rounded-xl text-sm font-semibold
+                           hover:bg-[var(--color-primary-700)] transition duration-200 shadow-sm
+                           hover:shadow-md whitespace-nowrap">
+              ✏️ Ver / Editar
+            </button>
+          </td>
+
         </tr>
       </tbody>
     </table>
   </div>
-  </div>
-<!-- MODAL 1 -->
+</div>
+
+<!-- ========== MODAL 1: MASCOTAS DEL CLIENTE ========== -->
 <div *ngIf="mostrarModal"
      class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
 
-<!-- contenedor del modal -->
-<div class="bg-white rounded-3xl shadow-2xl w-11/12 max-w-3xl 
-            p-12 relative transition-all duration-300 overflow-hidden">
+  <div class="bg-white rounded-3xl shadow-2xl w-11/12 max-w-3xl
+              p-12 relative transition-all duration-300 overflow-hidden">
 
     <!-- botón cerrar -->
     <button (click)="cerrarModal()"
@@ -68,27 +114,25 @@
     </button>
 
     <!-- CONTENIDO GENERAL -->
-<div class="space-y-12">
+    <div class="space-y-12">
       <!-- TITULO -->
       <div class="text-center space-y-3">
         <h2 class="text-4xl font-extrabold text-[var(--color-dark-700)]">
           Cliente seleccionado
         </h2>
-
         <p class="text-2xl text-[var(--color-dark-700)] font-semibold">
           {{ clienteSeleccionado?.nombre }} {{ clienteSeleccionado?.apellido }}
         </p>
-
         <p class="text-xl text-[var(--color-dark-500)]">
           DNI: {{ clienteSeleccionado?.dni }}
         </p>
       </div>
 
       <!-- MASCOTAS -->
-<div class="space-y-6 max-h-[60vh] overflow-y-auto mt-4">
-      <h3 class="font-bold text-[var(--color-dark-700)] text-2xl !ml-8">
-        Mascotas ({{ mascotas.length }})
-      </h3>
+      <div class="space-y-6 max-h-[60vh] overflow-y-auto mt-4">
+        <h3 class="font-bold text-[var(--color-dark-700)] text-2xl !ml-8">
+          Mascotas ({{ mascotas.length }})
+        </h3>
 
         <div *ngIf="mascotas.length === 0"
              class="text-[var(--color-dark-400)] text-lg bg-[var(--color-dark-100)] p-6 rounded-xl">
@@ -96,7 +140,7 @@
         </div>
 
         <div *ngFor="let m of mascotas"
-             class="bg-[var(--color-primary-50)] p-8 rounded-2xl flex items-center justify-between 
+             class="bg-[var(--color-primary-50)] p-8 rounded-2xl flex items-center justify-between
                     hover:shadow-lg hover:bg-[var(--color-primary-100)] transition duration-200">
 
           <!-- info mascota -->
@@ -115,96 +159,75 @@
           <!-- botón seleccionar -->
           <button (click)="guardarSeleccion(m, clienteSeleccionado)"
                   class="bg-[var(--color-primary-600)] text-white px-12 py-5 text-lg rounded-xl !mr-4
-                         hover:bg-[var(--color-primary-700)] transition duration-200 
+                         hover:bg-[var(--color-primary-700)] transition duration-200
                          font-semibold shadow-md hover:shadow-xl">
             Seleccionar
           </button>
 
         </div>
-
       </div>
-
     </div>
   </div>
 </div>
-<!-- MODAL 2 VERDE -->
+
+<!-- ========== MODAL 2: SOBREESCRIBIR MASCOTA ========== -->
 <div *ngIf="modalSobreescribir"
      class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
 
-  <!-- contenedor del modal -->
-  <div class="bg-[var(--color-primary-50)] 
+  <div class="bg-[var(--color-primary-50)]
               border-2 border-[var(--color-primary-300)]
-              rounded-3xl shadow-2xl w-11/12 max-w-2xl p-12 relative 
+              rounded-3xl shadow-2xl w-11/12 max-w-2xl p-12 relative
               transition-all duration-300 transform scale-100">
 
-    <!-- botón cerrar -->
     <button (click)="modalSobreescribir = false"
-            class="absolute top-6 right-6 text-[var(--color-primary-600)] 
+            class="absolute top-6 right-6 text-[var(--color-primary-600)]
                    hover:text-red-500 text-2xl font-bold transition">
       ✕
     </button>
 
-    <!-- Icono + título -->
     <div class="text-center space-y-6">
-
-      <div class="text-6xl">
-        ⚠️
-      </div>
+      <div class="text-6xl">⚠️</div>
 
       <h2 class="text-4xl font-extrabold text-[var(--color-primary-700)]">
         Sobreescribir selección
       </h2>
 
       <p class="text-xl text-[var(--color-primary-800)] leading-relaxed">
-        Ya existe una mascota seleccionada.
-        <br>
+        Ya existe una mascota seleccionada.<br>
         ¿Deseas reemplazarla por:
       </p>
 
-      <!-- Datos nuevos -->
       <div class="bg-white rounded-2xl p-6 shadow-inner border border-[var(--color-primary-200)]">
         <p class="text-2xl font-bold text-[var(--color-primary-600)]">
           🐾 {{ mascotaPendiente?.nombre }}
         </p>
-
-        <p class="text-xl text-[var(--color-primary-700)] leading-relaxed mt-2">
-          De dueño :
-        </p>
-
-        <p class="text-lg text-[var(--color-dark-600)]">
-          {{ clientePendiente?.nombre }}
-        </p>
+        <p class="text-xl text-[var(--color-primary-700)] leading-relaxed mt-2">De dueño:</p>
+        <p class="text-lg text-[var(--color-dark-600)]">{{ clientePendiente?.nombre }}</p>
       </div>
-
     </div>
 
-    <!-- Botones -->
     <div class="flex justify-center gap-8 mt-10">
-
-      <!-- Cancelar -->
       <button (click)="modalSobreescribir = false"
-              class="px-10 py-4 text-lg rounded-2xl border-2 
-                     border-[var(--color-primary-400)] 
+              class="px-10 py-4 text-lg rounded-2xl border-2
+                     border-[var(--color-primary-400)]
                      text-[var(--color-primary-700)]
-                     hover:bg-[var(--color-primary-100)] 
+                     hover:bg-[var(--color-primary-100)]
                      transition duration-200 font-semibold">
         Cancelar
       </button>
 
-      <!-- Aceptar -->
       <button (click)="aceptarSobreescripcion()"
-              class="px-10 py-4 text-lg rounded-2xl 
+              class="px-10 py-4 text-lg rounded-2xl
                      bg-[var(--color-primary-600)] text-white
                      hover:bg-[var(--color-primary-700)]
                      transition duration-200 font-semibold shadow-md hover:shadow-xl">
         Sí, reemplazar
       </button>
-
     </div>
-
   </div>
 </div>
 
+<!-- ========== TOAST ========== -->
 <div class="fixed bottom-6 right-6 z-[9999] pointer-events-auto">
   <div [ngClass]="{
         'opacity-0 translate-y-6': !toastVisible,
@@ -215,8 +238,185 @@
        class="px-6 py-4 rounded-2xl shadow-2xl text-white font-semibold
               flex items-center gap-3 transform transition-all duration-500"
        *ngIf="mostrarToast">
-
     <span class="text-xl">{{ tipoToast === 'success' ? '✅' : '⚠️' }}</span>
     <span class="text-lg">{{ mensajeToast }}</span>
+  </div>
+</div>
+
+<!-- ========== MODAL CREAR CLIENTE ========== -->
+<div *ngIf="modalCrear"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm
+            flex items-center justify-center z-50">
+
+  <div class="bg-white rounded-3xl shadow-2xl w-11/12 max-w-2xl p-10 relative">
+
+    <button (click)="modalCrear = false"
+            class="absolute top-5 right-5 text-2xl text-gray-500 hover:text-red-500 transition">
+      ✕
+    </button>
+
+    <h2 class="text-3xl font-extrabold mb-8 text-[var(--color-primary-700)]">
+      Registrar Cliente
+    </h2>
+
+    <form (ngSubmit)="registrar()" #formCliente="ngForm"
+          class="grid grid-cols-2 gap-6">
+
+      <!-- Nombre -->
+      <div class="col-span-1">
+        <input type="text" name="nombre" [(ngModel)]="nuevoCliente.nombre"
+               placeholder="Nombre" required
+               class="w-full border p-3 rounded-xl focus:ring-2 focus:ring-[var(--color-primary-400)]">
+        <div *ngIf="errores?.nombre" class="text-red-500 text-sm mt-1">{{ errores.nombre }}</div>
+      </div>
+
+      <!-- Apellido -->
+      <div class="col-span-1">
+        <input type="text" name="apellido" [(ngModel)]="nuevoCliente.apellido"
+               placeholder="Apellido" required
+               class="w-full border p-3 rounded-xl focus:ring-2 focus:ring-[var(--color-primary-400)]">
+        <div *ngIf="errores?.apellido" class="text-red-500 text-sm mt-1">{{ errores.apellido }}</div>
+      </div>
+
+      <!-- DNI -->
+      <div class="col-span-1">
+        <input type="text" name="dni" [(ngModel)]="nuevoCliente.dni"
+               placeholder="DNI" required
+               class="w-full border p-3 rounded-xl">
+        <div *ngIf="errores?.dni" class="text-red-500 text-sm mt-1">{{ errores.dni }}</div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="col-span-1">
+        <input type="text" name="telefono" [(ngModel)]="nuevoCliente.telefono"
+               placeholder="Teléfono" required
+               class="w-full border p-3 rounded-xl">
+        <div *ngIf="errores?.telefono" class="text-red-500 text-sm mt-1">{{ errores.telefono }}</div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="col-span-2">
+        <input type="text" name="direccion" [(ngModel)]="nuevoCliente.direccion"
+               placeholder="Dirección"
+               class="w-full border p-3 rounded-xl">
+        <div *ngIf="errores?.direccion" class="text-red-500 text-sm mt-1">{{ errores.direccion }}</div>
+      </div>
+
+      <!-- Email -->
+      <div class="col-span-2">
+        <input type="email" name="email" [(ngModel)]="nuevoCliente.email"
+               placeholder="Email" required
+               class="w-full border p-3 rounded-xl">
+        <div *ngIf="errores?.email" class="text-red-500 text-sm mt-1">{{ errores.email }}</div>
+      </div>
+
+      <!-- Botones -->
+      <div class="col-span-2 flex justify-end gap-4 mt-6">
+        <button type="button" (click)="modalCrear = false"
+                class="px-6 py-2 border rounded-xl hover:bg-gray-100 transition">
+          Cancelar
+        </button>
+        <button type="submit"
+                class="px-6 py-2 bg-[var(--color-primary-600)] text-white rounded-xl
+                       hover:bg-[var(--color-primary-700)] transition font-semibold">
+          Guardar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- ========== MODAL EDITAR CLIENTE ========== -->
+<div *ngIf="modalEditar"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm
+            flex items-center justify-center z-50">
+
+  <div class="bg-white rounded-3xl shadow-2xl w-11/12 max-w-2xl p-10 relative">
+
+    <!-- cerrar -->
+    <button (click)="cerrarModalEditar()"
+            class="absolute top-5 right-5 text-2xl text-gray-500 hover:text-red-500 transition">
+      ✕
+    </button>
+
+    <h2 class="text-3xl font-extrabold mb-2 text-[var(--color-primary-700)]">
+      Datos del Cliente
+    </h2>
+    <p class="text-sm text-[var(--color-dark-400)] mb-8">
+      Modifica los datos y presiona <strong>Actualizar</strong> para guardar los cambios.
+    </p>
+
+    <form (ngSubmit)="guardarEdicion()" #formEditar="ngForm"
+          class="grid grid-cols-2 gap-6">
+
+      <!-- Nombre -->
+      <div class="col-span-1">
+        <label class="block text-sm font-semibold text-[var(--color-dark-600)] mb-1">Nombre</label>
+        <input type="text" name="editNombre" [(ngModel)]="clienteEditando.nombre"
+               placeholder="Nombre" required
+               class="w-full border p-3 rounded-xl focus:ring-2 focus:ring-[var(--color-primary-400)]">
+        <div *ngIf="errores?.nombre" class="text-red-500 text-sm mt-1">{{ errores.nombre }}</div>
+      </div>
+
+      <!-- Apellido -->
+      <div class="col-span-1">
+        <label class="block text-sm font-semibold text-[var(--color-dark-600)] mb-1">Apellido</label>
+        <input type="text" name="editApellido" [(ngModel)]="clienteEditando.apellido"
+               placeholder="Apellido" required
+               class="w-full border p-3 rounded-xl focus:ring-2 focus:ring-[var(--color-primary-400)]">
+        <div *ngIf="errores?.apellido" class="text-red-500 text-sm mt-1">{{ errores.apellido }}</div>
+      </div>
+
+      <!-- DNI -->
+      <div class="col-span-1">
+        <label class="block text-sm font-semibold text-[var(--color-dark-600)] mb-1">DNI</label>
+        <input type="text" name="editDni" [(ngModel)]="clienteEditando.dni"
+               placeholder="DNI" required
+               class="w-full border p-3 rounded-xl">
+        <div *ngIf="errores?.dni" class="text-red-500 text-sm mt-1">{{ errores.dni }}</div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="col-span-1">
+        <label class="block text-sm font-semibold text-[var(--color-dark-600)] mb-1">Teléfono</label>
+        <input type="text" name="editTelefono" [(ngModel)]="clienteEditando.telefono"
+               placeholder="Teléfono" required
+               class="w-full border p-3 rounded-xl">
+        <div *ngIf="errores?.telefono" class="text-red-500 text-sm mt-1">{{ errores.telefono }}</div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="col-span-2">
+        <label class="block text-sm font-semibold text-[var(--color-dark-600)] mb-1">Dirección</label>
+        <input type="text" name="editDireccion" [(ngModel)]="clienteEditando.direccion"
+               placeholder="Dirección"
+               class="w-full border p-3 rounded-xl">
+        <div *ngIf="errores?.direccion" class="text-red-500 text-sm mt-1">{{ errores.direccion }}</div>
+      </div>
+
+      <!-- Email -->
+      <div class="col-span-2">
+        <label class="block text-sm font-semibold text-[var(--color-dark-600)] mb-1">Email</label>
+        <input type="email" name="editEmail" [(ngModel)]="clienteEditando.email"
+               placeholder="Email" required
+               class="w-full border p-3 rounded-xl">
+        <div *ngIf="errores?.email" class="text-red-500 text-sm mt-1">{{ errores.email }}</div>
+      </div>
+
+      <!-- Botones -->
+      <div class="col-span-2 flex justify-end gap-4 mt-6">
+        <button type="button" (click)="cerrarModalEditar()"
+                class="px-6 py-2 border rounded-xl hover:bg-gray-100 transition">
+          Cancelar
+        </button>
+        <button type="submit"
+                class="px-6 py-2 bg-[var(--color-primary-600)] text-white rounded-xl
+                       hover:bg-[var(--color-primary-700)] transition font-semibold">
+          Actualizar
+        </button>
+      </div>
+
+    </form>
   </div>
 </div>

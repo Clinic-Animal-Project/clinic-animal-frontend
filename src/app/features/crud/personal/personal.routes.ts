@@ -8,8 +8,13 @@ export const PERSONAL_CRUD_ROUTES: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./personal.component')
-          .then(m => m.PersonalComponent)
+        loadComponent: () => import('./components/personal-list/personal-list.component')
+          .then(m => m.PersonalListComponent)
+      },
+      {
+        path: 'crear',
+        loadComponent: () => import('./components/personal-form/personal-form.component')
+          .then(m => m.PersonalFormComponent)
       }
     ]
   }

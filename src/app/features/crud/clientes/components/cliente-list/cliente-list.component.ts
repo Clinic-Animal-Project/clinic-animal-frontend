@@ -24,9 +24,21 @@ export class ClienteListComponent implements OnInit {
   totalItems = signal(0);
   totalPages = signal(0);
 
+  // ID del cliente recién creado (para resaltarlo)
+  clienteNuevoId: number | null = null;
+
   Math = Math;
 
   ngOnInit(): void {
+    // Detectar si venimos de crear un cliente (state de la navegación)
+    const nav = this.router.getCurrentNavigation();
+    const state = nav?.extras?.state as { clienteNuevoId?: number } | undefined;
+    if (state?.clienteNuevoId) {
+      this.clienteNuevoId = state.clienteNuevoId;
+      // Quitar resaltado después de 4 segundos
+      setTimeout(() => { this.clienteNuevoId = null; }, 4000);
+    }
+
     this.cargarClientes();
   }
 
@@ -34,9 +46,18 @@ export class ClienteListComponent implements OnInit {
     this.loading.set(true);
 
     this.clienteService.getClientes(this.currentPage(), this.pageSize).subscribe({
-      next: (response) => {
-        this.clientes.set(response);
+      next: (clientes) => {
+        this.clientes.set(clientes);
         this.loading.set(false);
+
+        // Si no detectamos el ID desde el state (timing), buscar el último añadido
+        if (this.clienteNuevoId === null) {
+          const history = (window.history.state) as { clienteNuevoId?: number };
+          if (history?.clienteNuevoId) {
+            this.clienteNuevoId = history.clienteNuevoId;
+            setTimeout(() => { this.clienteNuevoId = null; }, 4000);
+          }
+        }
       },
       error: () => {
         this.notificationService.error('Error al cargar clientes');

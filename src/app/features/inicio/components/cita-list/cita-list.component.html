@@ -27,7 +27,7 @@
           'bg-blue-500': estado === 'PROGRAMADA',
           'bg-amber-500': estado === 'EN_COLA',
           'bg-emerald-500': estado === 'TERMINADA',
-          'bg-rose-500': estado === 'CANCELADA',
+          'bg-rose-500': estado === 'CANCELADO',
           'bg-purple-500': estado === 'PAGADA'
         }" class="absolute left-0 top-0 h-full w-1.5"></div>
 
@@ -41,7 +41,7 @@
               'bg-blue-500': estado === 'PROGRAMADA',
               'bg-amber-500': estado === 'EN_COLA',
               'bg-emerald-500': estado === 'TERMINADA',
-              'bg-rose-500': estado === 'CANCELADA',
+              'bg-rose-500': estado === 'CANCELADO',
               'bg-purple-500': estado === 'PAGADA'
             }" class="h-2 w-2 rounded-full opacity-60"></div>
           </div>
@@ -113,7 +113,7 @@
               'bg-blue-100 text-blue-700': cita.estado === 'PROGRAMADA',
               'bg-amber-100 text-amber-700': cita.estado === 'EN_COLA',
               'bg-emerald-100 text-emerald-700': cita.estado === 'TERMINADA',
-              'bg-rose-100 text-rose-700': cita.estado === 'CANCELADA',
+              'bg-rose-100 text-rose-700': cita.estado === 'CANCELADO',
               'bg-purple-100 text-purple-700': cita.estado === 'PAGADA'
             }" class="px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">
               {{ cita.estado.replace('_', ' ') }}
