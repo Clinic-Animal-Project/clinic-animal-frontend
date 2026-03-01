@@ -57,5 +57,16 @@ export class CitasService {
     );
   }
 
+  cambiarEstadoCitaACancelada(id: number): Observable<CitasResponse> {
+    return this.http.patch<ApiResponse<CitasResponse>>(`${this.apiUrl}/${id}/cancelar`, null).pipe(
+      map(resp => resp?.data as CitasResponse)
+    );
+  }
+
+  reprogramarCita(id: number, fechaHora: string): Observable<CitasResponse> {
+    return this.http.patch<ApiResponse<CitasResponse>>(`${this.apiUrl}/${id}/reprogramar`, { fechaHora }).pipe(
+      map(resp => resp?.data as CitasResponse)
+    );
+  }
 
 }

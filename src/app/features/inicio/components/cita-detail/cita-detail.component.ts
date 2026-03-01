@@ -22,6 +22,10 @@ export class CitaDetailComponent {
   veterinarios = signal<PersonalResponse[]>([]); // Lista de médicos
   vetSeleccionado = signal<number | null>(null); // ID del médico elegido en el select
 
+  mostrarConfirmacion = signal(false);
+  mostrarCancelacion = signal(false);
+  mostrarReprogramar = signal(false);
+  nuevaFechaHora = signal('');
   // Angular mapeará el :id de la ruta a esta propiedad
   @Input() id!: string; 
 
@@ -33,30 +37,57 @@ export class CitaDetailComponent {
     'TERMINADA': { etiqueta: EstadoCita.TERMINADA, siguiente: EstadoCita.PAGADA },
     'PAGADA': { etiqueta: EstadoCita.PAGADA, siguiente: EstadoCita.PAGADA }
   };
-  mostrarConfirmacion = signal(false);
+
   // Computado para obtener la info del botón dinámicamente
   proximoPaso = computed(() => {
     const estadoActual = this.cita()?.estado;
     const paso = estadoActual ? this.flujoEstados[estadoActual] : null;
 
-    if (paso?.siguiente === EstadoCita.PAGADA) return null;
-  
-  return paso;
+    if (paso?.etiqueta === EstadoCita.PAGADA) return null;
+    return paso;
   });
+
   abrirConfirmacion() {
     this.mostrarConfirmacion.set(true);
+  }
+  abrirCancelacion() {
+    this.mostrarCancelacion.set(true);
+  }
+  abrirReprogramar() {
+    // Inicializamos con la fecha actual de la cita si existe
+    this.nuevaFechaHora.set(this.cita()?.fechaHora || '');
+    this.mostrarReprogramar.set(true);
   }
 
   confirmarCambio() {
     this.mostrarConfirmacion.set(false);
     this.cambiarEstado(); // Ejecuta la lógica que ya tenías
   }
+  confirmarCancelacion() {
+    this.mostrarCancelacion.set(false);
+    this.citasService.cambiarEstadoCitaACancelada(Number(this.id)).subscribe({
+      next: () => this.obtenerDetalleCita(),
+      error: (err) => alert('Error al cancelar la cita')
+    });
+  }
+  confirmarReprogramacion() {
+    if (!this.nuevaFechaHora()) return;
+    console.log("nueva fecha: ",this.nuevaFechaHora())
+    this.citasService.reprogramarCita(Number(this.id), this.nuevaFechaHora()).subscribe({
+      next: () => {
+        this.mostrarReprogramar.set(false);
+        this.obtenerDetalleCita(); // Refrescamos los datos
+      },
+      error: (err) => alert('Error al reprogramar la cita')
+    });
+  }
+
 
   ngOnInit(): void {
     if (this.id) {
       
       this.citasService.obtenerPorId(Number(this.id)).pipe(
-
+        //? El switchMap permite encadenar la consulta de la cita con la de los veterinarios solo si es necesario
         switchMap(cita => {
           this.cita.set(cita);
           // Si la cita está PROGRAMADA, cargamos los veterinarios disponibles para ese área
@@ -113,10 +144,10 @@ export class CitaDetailComponent {
 
   cargarVeterinarios() {
     this.personalService.listarPersonal().subscribe(data => {
-      console.log("vets todo:", data)
+      // console.log("vets todo:", data)
       // Filtramos para que solo aparezcan los del área de la cita
       const listaFiltrada = data.filter((v: PersonalResponse) => v.idArea === this.cita()?.area?.id);
-      console.log("vets filtrados:", listaFiltrada)
+      // console.log("vets filtrados:", listaFiltrada)
       this.veterinarios.set(listaFiltrada);
     });
   }
