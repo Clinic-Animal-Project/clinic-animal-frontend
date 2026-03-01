@@ -1,0 +1,230 @@
+<div class="container mx-auto p-4 max-w-4xl">
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Registrar Personal</h2>
+        <form [formGroup]="personalForm" (ngSubmit)="onSubmit()">
+
+            <!-- ========== DATOS DE ACCESO ========== -->
+            <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Datos de Acceso</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+                <!-- Nombre de Usuario -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="nombreUsuario">
+                        Nombre de Usuario
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        [class.border-red-500]="isFieldInvalid('nombreUsuario')" id="nombreUsuario" type="text"
+                        formControlName="nombreUsuario" placeholder="Ej: jperez">
+                    <p *ngIf="isFieldInvalid('nombreUsuario')" class="text-red-500 text-xs italic mt-1">
+                        El nombre de usuario es obligatorio (máx. 50 caracteres).
+                    </p>
+                </div>
+
+                <!-- Clave -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="claveUsuario">
+                        Contraseña
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        [class.border-red-500]="isFieldInvalid('claveUsuario')" id="claveUsuario" type="password"
+                        formControlName="claveUsuario" placeholder="Mínimo 6 caracteres">
+                    <p *ngIf="isFieldInvalid('claveUsuario')" class="text-red-500 text-xs italic mt-1">
+                        La clave es obligatoria (mín. 6 caracteres).
+                    </p>
+                </div>
+
+                <!-- Correo -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="correo">
+                        Correo Electrónico
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        [class.border-red-500]="isFieldInvalid('correo')" id="correo" type="email"
+                        formControlName="correo" placeholder="correo@ejemplo.com">
+                    <p *ngIf="isFieldInvalid('correo')" class="text-red-500 text-xs italic mt-1">
+                        Un correo válido es obligatorio.
+                    </p>
+                </div>
+
+                <!-- DNI -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="dni">
+                        DNI
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        [class.border-red-500]="isFieldInvalid('dni')" id="dni" type="text" formControlName="dni"
+                        placeholder="8 dígitos" maxlength="8">
+                    <p *ngIf="isFieldInvalid('dni')" class="text-red-500 text-xs italic mt-1">
+                        El DNI debe tener exactamente 8 dígitos.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ========== DATOS DEL PERSONAL ========== -->
+            <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Datos del Personal</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+                <!-- Nombre -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="nombrePersonal">
+                        Nombre(s)
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        [class.border-red-500]="isFieldInvalid('nombrePersonal')" id="nombrePersonal" type="text"
+                        formControlName="nombrePersonal" placeholder="Ingrese los nombres">
+                    <p *ngIf="isFieldInvalid('nombrePersonal')" class="text-red-500 text-xs italic mt-1">
+                        El nombre es obligatorio (máx. 100 caracteres).
+                    </p>
+                </div>
+
+                <!-- Apellido -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="apellidoPersonal">
+                        Apellidos
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        [class.border-red-500]="isFieldInvalid('apellidoPersonal')" id="apellidoPersonal" type="text"
+                        formControlName="apellidoPersonal" placeholder="Ingrese los apellidos">
+                    <p *ngIf="isFieldInvalid('apellidoPersonal')" class="text-red-500 text-xs italic mt-1">
+                        El apellido es obligatorio (máx. 100 caracteres).
+                    </p>
+                </div>
+
+                <!-- Edad -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edad">
+                        Edad
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        [class.border-red-500]="isFieldInvalid('edad')" id="edad" type="number" formControlName="edad"
+                        placeholder="Mínimo 18">
+                    <p *ngIf="isFieldInvalid('edad')" class="text-red-500 text-xs italic mt-1">
+                        La edad es obligatoria (mín. 18 años).
+                    </p>
+                </div>
+
+                <!-- Teléfono -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono">
+                        Teléfono
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        [class.border-red-500]="isFieldInvalid('telefono')" id="telefono" type="tel"
+                        formControlName="telefono" placeholder="Entre 9 y 15 dígitos">
+                    <p *ngIf="isFieldInvalid('telefono')" class="text-red-500 text-xs italic mt-1">
+                        El teléfono debe contener entre 9 y 15 dígitos.
+                    </p>
+                </div>
+
+                <!-- Rol Ocupacional -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="idRol">
+                        Rol Ocupacional
+                    </label>
+                    <div class="relative">
+                        <select
+                            class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                            [class.border-red-500]="isFieldInvalid('idRol')" id="idRol" formControlName="idRol">
+                            <option value="" disabled selected>Seleccione un Rol</option>
+                            <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.rolNombre || rol.nombre }}
+                            </option>
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p *ngIf="isFieldInvalid('idRol')" class="text-red-500 text-xs italic mt-1">El rol es obligatorio.
+                    </p>
+                </div>
+
+                <!-- Área -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="idArea">
+                        Área de Trabajo
+                    </label>
+                    <div class="relative">
+                        <select
+                            class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                            [class.border-red-500]="isFieldInvalid('idArea')" id="idArea" formControlName="idArea">
+                            <option value="" disabled selected>Seleccione un Área</option>
+                            <option *ngFor="let area of areas" [value]="area.id">{{ area.nomArea }}</option>
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p *ngIf="isFieldInvalid('idArea')" class="text-red-500 text-xs italic mt-1">El área es obligatoria.
+                    </p>
+                </div>
+
+                <!-- Estado del Personal -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="estadoPersonal">
+                        Estado del Personal
+                    </label>
+                    <div class="relative">
+                        <select
+                            class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                            id="estadoPersonal" formControlName="estadoPersonal">
+                            <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rol de Usuario (Sistema) -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="rolUsuario">
+                        Rol en el Sistema
+                    </label>
+                    <div class="relative">
+                        <select
+                            class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                            id="rolUsuario" formControlName="rolUsuario">
+                            <option *ngFor="let ru of rolesUsuario" [value]="ru">{{ ru }}</option>
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex items-center justify-end">
+                <button
+                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
+                    type="button" (click)="cancelar()">
+                    Cancelar
+                </button>
+                <button
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="submit">
+                    Registrar Personal
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
