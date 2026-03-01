@@ -198,11 +198,18 @@
              placeholder="Nombre"
              class="col-span-1 border p-3 rounded-xl">
 
-      <input type="text"
-             [(ngModel)]="nuevaMascota.especie"
-             name="especie"
-             placeholder="Especie"
-             class="col-span-1 border p-3 rounded-xl">
+      <select [(ngModel)]="nuevaMascota.especie"
+              name="especie"
+              class="col-span-1 border p-3 rounded-xl">
+        <option value="">Seleccionar especie</option>
+        <option value="Perro">Perro</option>
+        <option value="Gato">Gato</option>
+        <option value="Conejo">Conejo</option>
+        <option value="Loro">Loro</option>
+        <option value="Hamster">Hamster</option>
+
+
+      </select>
 
       <input type="text"
              [(ngModel)]="nuevaMascota.raza"
@@ -220,8 +227,8 @@
               name="sexo"
               class="col-span-1 border p-3 rounded-xl">
         <option value="">Seleccionar sexo</option>
-        <option value="MACHO">M</option>
-        <option value="HEMBRA">F</option>
+        <option value="M">M</option>
+        <option value="F">F</option>
       </select>
 
       <!-- 🔥 Selector de Cliente -->

@@ -139,6 +139,7 @@ cerrarModal() {
   this.modalSobreescribir = false;
   this.mascotaPendiente = null;
   this.clientePendiente = null;
+  this.modalCrear = false;
 }
 
  aceptarSobreescripcion() {
@@ -196,7 +197,7 @@ registrar() {
         this.mostrarMensaje('Mascota registrada correctamente  ✅', 'success');
         this.limpiarFormulario();
         this.buscarPorNombre(); // refrescar lista
-            this.cerrarModal(); 
+        this.cerrarModal(); 
       },
 error: (error) => {
   console.log("STATUS:", error.status);
