@@ -19,7 +19,7 @@ import { AuthService } from '../../core/services/auth.service';
               🐾
             </div>
             <h1 class="text-2xl font-bold">
-              <span class="text-dark-700">Clínica</span><span class="text-primary-600">animal</span>
+              <span class="text-dark-700">Clínic</span><span class="text-primary-600">Animal</span>
             </h1>
           </div>
 
@@ -30,7 +30,7 @@ import { AuthService } from '../../core/services/auth.service';
               <div class="hidden md:flex items-center gap-3">
                 <div class="text-right">
                   <p class="text-sm font-semibold text-dark-700">
-                    {{ authService.currentUser()?.username }} {{ authService.currentUser()?.username }}
+                    {{ authService.currentUser()?.username }} 
                   </p>
                   <p class="text-xs text-gray-500 capitalize">
                     {{ authService.currentUser()?.rol }}

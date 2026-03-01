@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ClientService } from '../../features/clientes/service/client-service';
 import { Client } from '../../features/clientes/model/client-model';
 import { ChangeDetectorRef } from '@angular/core';
@@ -20,6 +21,7 @@ export class ClientesPageComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private clientService = inject(ClientService);
   private zone = inject(NgZone);
+  private router = inject(Router);
   nombreBusqueda: string = '';
   toastVisible = false;
   toastEnDOM = false;
@@ -275,5 +277,10 @@ export class ClientesPageComponent implements OnInit {
           }
         }
       });
+  }
+
+  verHistorial(idCliente: number, event: Event) {
+    event.stopPropagation();
+    this.router.navigate(['/historial/cliente', idCliente]);
   }
 }

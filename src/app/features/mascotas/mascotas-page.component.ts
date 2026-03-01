@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Mascota } from '../mascotas/models/mascotas.models';
@@ -26,6 +27,7 @@ private cdr = inject(ChangeDetectorRef);
 private clientService = inject(ClientService);
   private mascotaService = inject(MascotaService);
   private zone = inject(NgZone);
+  private router = inject(Router);
 nombreBusqueda: string = '';
 toastEnDOM = false; // controla si el div está en el DOM
 mascotaPendiente: Mascota | null = null;
@@ -226,5 +228,9 @@ limpiarFormulario() {
   };
 
   this.errores = {}; // limpia errores del backend también
+}
+
+verHistorial(idMascota: number) {
+  this.router.navigate(['/historial/mascota', idMascota]);
 }
 }

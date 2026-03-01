@@ -83,15 +83,24 @@
           <td class="px-6 py-4 text-[var(--color-primary-600)] font-medium">{{ c.email }}</td>
           <td class="px-6 py-4 text-[var(--color-dark-500)]">{{ c.direccion || '—' }}</td>
 
-          <!-- Botón Ver datos / Actualizar -->
+          <!-- Botones de acción -->
           <td class="px-6 py-4 text-center" (click)="$event.stopPropagation()">
-            <button (click)="abrirModalEditar(c, $event)"
-                    class="inline-flex items-center gap-2 bg-[var(--color-primary-600)] text-white
-                           px-4 py-2 rounded-xl text-sm font-semibold
-                           hover:bg-[var(--color-primary-700)] transition duration-200 shadow-sm
-                           hover:shadow-md whitespace-nowrap">
-              ✏️ Ver / Editar
-            </button>
+            <div class="flex gap-2 justify-center">
+              <button (click)="abrirModalEditar(c, $event)"
+                      class="inline-flex items-center gap-2 bg-[var(--color-primary-600)] text-white
+                             px-4 py-2 rounded-xl text-sm font-semibold
+                             hover:bg-[var(--color-primary-700)] transition duration-200 shadow-sm
+                             hover:shadow-md whitespace-nowrap">
+                ✏️ Ver / Editar
+              </button>
+              <button (click)="verHistorial(c.id, $event)"
+                      class="inline-flex items-center gap-2 bg-[var(--color-dark-600)] text-white
+                             px-4 py-2 rounded-xl text-sm font-semibold
+                             hover:bg-[var(--color-dark-700)] transition duration-200 shadow-sm
+                             hover:shadow-md whitespace-nowrap">
+                📋 Historial
+              </button>
+            </div>
           </td>
 
         </tr>
