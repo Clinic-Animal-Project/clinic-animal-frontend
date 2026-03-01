@@ -88,7 +88,10 @@ export class ClienteFormComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.notificationService.success('Cliente creado exitosamente');
-          this.volver();
+          const nuevoId = (response.data as any)?.id ?? null;
+          this.router.navigate(['/mantenimiento/clientes'], {
+            state: { clienteNuevoId: nuevoId }
+          });
         }
         this.submitting.set(false);
       },

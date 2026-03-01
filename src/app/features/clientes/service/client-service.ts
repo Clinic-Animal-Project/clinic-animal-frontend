@@ -34,41 +34,46 @@ export class ClientService {
   private apiUrl = `${environment.apiUrl}/clientes`;
   private mascotasApiUrl = `${environment.apiUrl}/mascotas`;
 
-listarClientes(nombre: string): Observable<Client[]> {
-  if (nombre) {
-    const params = new HttpParams().set('nombre', nombre);
-    return this.http.get<any>(this.apiUrl, { params }).pipe(
+  listarClientes(nombre: string): Observable<Client[]> {
+    if (nombre) {
+      const params = new HttpParams().set('nombre', nombre);
+      return this.http.get<any>(this.apiUrl, { params }).pipe(
+        map(resp => {
+          console.log("RESP COMPLETO 👉", resp);
+          return resp.data ?? [];
+        })
+      );
+    } else {
+      return this.http.get<any>(this.apiUrl).pipe(
+        map(resp => {
+          console.log("RESP COMPLETO 👉", resp);
+          return resp.data ?? [];
+        })
+      );
+    }
+  }
+
+  listarMascotasPorCliente(id: number): Observable<Mascota[]> {
+    return this.http.get<any>(`${this.mascotasApiUrl}/cliente/${id}`).pipe(
       map(resp => {
-        console.log("RESP COMPLETO 👉", resp);
-        return resp.data ?? [];
-      })
-    );
-  } else {
-    return this.http.get<any>(this.apiUrl).pipe(
-      map(resp => {
-        console.log("RESP COMPLETO 👉", resp);
+        console.log("Mascotas del cliente 👉", resp);
         return resp.data ?? [];
       })
     );
   }
-}
-
-listarMascotasPorCliente(id: number): Observable<Mascota[]> {
-  return this.http.get<any>(`${this.mascotasApiUrl}/cliente/${id}`).pipe(
-    map(resp => {
-      console.log("Mascotas del cliente 👉", resp);
-      return resp.data ?? [];
-    })
-  );
-}
-buscarClientePorId(id: number) {
-  return this.http.get<any>(`${this.apiUrl}/${id}`);
-}
+  buscarClientePorId(id: number) {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
 
 
-// client-service.ts
+  // client-service.ts
 
-registrarCliente(cliente: ClienteRequestDto): Observable<Client> {
-  return this.http.post<any>(this.apiUrl, cliente);
-}
+  registrarCliente(cliente: ClienteRequestDto): Observable<Client> {
+    return this.http.post<any>(this.apiUrl, cliente);
+  }
+
+  actualizarCliente(id: number, cliente: ClienteRequestDto): Observable<Client> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, cliente);
+  }
+
 }
