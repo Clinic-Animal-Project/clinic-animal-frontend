@@ -2,6 +2,7 @@
   <h1 class="text-4xl md:text-3xl font-extrabold text-[var(--color-dark-700)] mb-8 tracking-tight">Mascotas</h1>
 
   <!-- 🔎 BUSCADOR (igual a clientes) -->
+   <div class="w-full flex items-center gap-4">
   <div class="w-full max-w-lg ml-0">
     <input type="text"
            [(ngModel)]="nombreBusqueda"
@@ -16,6 +17,14 @@
                   transition duration-300"
            style="padding-left: 0.5rem;">
   </div>
+    <!-- ➕ Botón -->
+  <button (click)="modalCrearMascota()"
+          class="ml-100 bg-[var(--color-primary-600)] text-white px-9 py-2 rounded-2xl
+                 hover:bg-[var(--color-primary-700)] transition font-semibold shadow-md
+                 whitespace-nowrap">
+    + Nueva Mascota
+  </button>
+   </div>
   <br>
 
   <!-- 📋 TABLA -->
@@ -163,5 +172,84 @@
 
     <span class="text-xl">{{ tipoToast === 'success' ? '✅' : '⚠️' }}</span>
     <span class="text-lg">{{ mensajeToast }}</span>
+  </div>
+</div>
+<!-- 🐾 MODAL CREAR MASCOTA -->
+<div *ngIf="modalCrear"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm
+            flex items-center justify-center z-50">
+
+  <div class="bg-white rounded-3xl shadow-2xl w-11/12 max-w-2xl p-10 relative">
+
+    <button (click)="modalCrear = false"
+            class="absolute top-5 right-5 text-2xl hover:text-red-500 transition">
+      ✕
+    </button>
+
+    <h2 class="text-3xl font-bold mb-8 text-[var(--color-primary-700)]">
+      Registrar Mascota
+    </h2>
+
+    <form (ngSubmit)="registrar()" class="grid grid-cols-2 gap-6">
+
+      <input type="text"
+             [(ngModel)]="nuevaMascota.nombre"
+             name="nombre"
+             placeholder="Nombre"
+             class="col-span-1 border p-3 rounded-xl">
+
+      <input type="text"
+             [(ngModel)]="nuevaMascota.especie"
+             name="especie"
+             placeholder="Especie"
+             class="col-span-1 border p-3 rounded-xl">
+
+      <input type="text"
+             [(ngModel)]="nuevaMascota.raza"
+             name="raza"
+             placeholder="Raza"
+             class="col-span-1 border p-3 rounded-xl">
+
+      <input type="number"
+             [(ngModel)]="nuevaMascota.edad"
+             name="edad"
+             placeholder="Edad"
+             class="col-span-1 border p-3 rounded-xl">
+
+      <select [(ngModel)]="nuevaMascota.sexo"
+              name="sexo"
+              class="col-span-1 border p-3 rounded-xl">
+        <option value="">Seleccionar sexo</option>
+        <option value="MACHO">M</option>
+        <option value="HEMBRA">F</option>
+      </select>
+
+      <!-- 🔥 Selector de Cliente -->
+      <select [(ngModel)]="nuevaMascota.idCliente"
+              name="idCliente"
+              class="col-span-2 border p-3 rounded-xl">
+        <option value="0">Seleccionar Cliente</option>
+        <option *ngFor="let c of clientes" [value]="c.id">
+          {{ c.nombre }} {{ c.apellido }}
+        </option>
+      </select>
+
+      <div class="col-span-2 flex justify-end gap-4 mt-6">
+
+        <button type="button"
+                (click)="modalCrear = false"
+                class="px-6 py-2 border rounded-xl">
+          Cancelar
+        </button>
+
+        <button type="submit"
+                class="px-6 py-2 bg-[var(--color-primary-600)] text-white rounded-xl">
+          Guardar
+        </button>
+
+      </div>
+
+    </form>
+
   </div>
 </div>

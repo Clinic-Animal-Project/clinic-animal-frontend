@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Mascota } from '../../mascotas/models/mascotas.models';
+import { Mascota, MascotaRequestDto } from '../../mascotas/models/mascotas.models';
 
 
 export interface ApiResponse<T> {
@@ -49,5 +49,9 @@ listarMascotas(nombre: string): Observable<Mascota[]> {
       })
     );
   }
+}
+
+registrarMascota(mascota: MascotaRequestDto): Observable<Mascota> {
+  return this.http.post<any>(this.apiUrl, mascota);
 }
 }
