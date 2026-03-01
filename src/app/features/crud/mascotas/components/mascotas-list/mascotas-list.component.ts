@@ -22,19 +22,20 @@ export class MascotasListComponent implements OnInit {
   ngOnInit(): void {
     this.cargarMascotas();
   }
+cargarMascotas(): void {
+  this.loading.set(true);
 
-  cargarMascotas(): void {
-    this.loading.set(true);
-    this.mascotasService.getMascotas().subscribe({
-      next: (data) => {
-        this.mascotas.set(data);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      }
-    });
-  }
+  this.mascotasService.getMascotas().subscribe({
+    next: (response: any) => {
+      this.mascotas.set(response.data);
+      this.loading.set(false);
+    },
+    error: (err) => {
+      console.error(err);
+      this.loading.set(false);
+    }
+  });
+}
 
   verDetalle(mascota: Mascota): void {
     this.router.navigate(['/mantenimiento/mascotas', mascota.id]);
