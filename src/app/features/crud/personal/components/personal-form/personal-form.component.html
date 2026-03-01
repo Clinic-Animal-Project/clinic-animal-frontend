@@ -134,7 +134,7 @@
                             class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                             [class.border-red-500]="isFieldInvalid('idRol')" id="idRol" formControlName="idRol">
                             <option value="" disabled selected>Seleccione un Rol</option>
-                            <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.nombreRol || rol.nombre }}
+                            <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.rolNombre || rol.nombre }}
                             </option>
                         </select>
                         <div

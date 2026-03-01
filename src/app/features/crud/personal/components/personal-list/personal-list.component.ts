@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { PersonalService } from '../../service/personal.service';
@@ -6,12 +6,12 @@ import { PersonalResponse } from '../../model/personal.model';
 
 @Component({
     selector: 'app-personal-list',
-    standalone: true,
     imports: [CommonModule, RouterModule],
     templateUrl: './personal-list.component.html'
 })
 export class PersonalListComponent implements OnInit {
-    personalList: PersonalResponse[] = [];
+
+    personalList = signal<PersonalResponse[]>([]);    isLoading = true;
     personalService = inject(PersonalService);
     router = inject(Router);
 
@@ -20,9 +20,12 @@ export class PersonalListComponent implements OnInit {
     }
 
     loadPersonal(): void {
+        this.isLoading = true;
         this.personalService.listarPersonal().subscribe({
             next: (data) => {
-                this.personalList = data;
+                console.log("personal ",data)
+                this.personalList.set(data);
+                this.isLoading = false;
             },
             error: (err) => {
                 console.error('Error al cargar personal', err);
@@ -47,5 +50,9 @@ export class PersonalListComponent implements OnInit {
 
     navigateToCreate(): void {
         this.router.navigate(['/mantenimiento/personal/crear']);
+    }
+
+    trackByPersonal(index: number, personal: PersonalResponse): number {
+        return personal.id;
     }
 }

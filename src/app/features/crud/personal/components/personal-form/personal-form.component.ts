@@ -8,6 +8,7 @@ import { AreasService } from '../../../areas/service/areas.service';
 import { AreasResponse } from '../../../areas/model/areas.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environments/environment';
+import { RolesService } from '../../../roles/service/roles.service';
 
 @Component({
     selector: 'app-personal-form',
@@ -20,6 +21,7 @@ export class PersonalFormComponent implements OnInit {
 
     personalService = inject(PersonalService);
     areasService = inject(AreasService);
+    rolesService = inject(RolesService);
     router = inject(Router);
     fb = inject(FormBuilder);
     http = inject(HttpClient);
@@ -65,9 +67,9 @@ export class PersonalFormComponent implements OnInit {
     }
 
     loadRoles(): void {
-        this.http.get<any>(`${environment.apiUrl}/roles`).subscribe({
-            next: (resp: any) => {
-                this.roles = resp.data || resp;
+        this.rolesService.listarRoles().subscribe({
+            next: (data: any[]) => {
+                this.roles = data;
             },
             error: (err: any) => console.error('Error cargando roles', err)
         });
