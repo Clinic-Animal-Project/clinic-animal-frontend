@@ -54,4 +54,8 @@ listarMascotas(nombre: string): Observable<Mascota[]> {
 registrarMascota(mascota: MascotaRequestDto): Observable<Mascota> {
   return this.http.post<any>(this.apiUrl, mascota);
 }
+
+obtenerMascotaPorId(id: number): Observable<ApiResponse<Mascota>> {
+  return this.http.get<ApiResponse<Mascota>>(`${this.apiUrl}/${id}`);
+}
 }

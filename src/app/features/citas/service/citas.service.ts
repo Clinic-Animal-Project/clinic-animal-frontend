@@ -69,4 +69,15 @@ export class CitasService {
     );
   }
 
+  listadoPorCliente(idCliente: number): Observable<CitasResponse[]> {
+    return this.http.get<ApiResponse<CitasResponse[]>>(`${this.apiUrl}/cliente/${idCliente}`).pipe(
+      map(resp => resp.data ?? [])
+    );
+  }
+
+  listadoPorMascota(idMascota: number): Observable<CitasResponse[]> {
+    return this.http.get<ApiResponse<CitasResponse[]>>(`${this.apiUrl}/mascota/${idMascota}`).pipe(
+      map(resp => resp.data ?? [])
+    );
+  }
 }

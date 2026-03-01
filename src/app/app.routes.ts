@@ -42,6 +42,17 @@ export const routes: Routes = [
         loadComponent: () => import('./features/citas/citas-page.component')
           .then(m => m.CitasPageComponent)
       },
+      // Historial
+      {
+        path: 'historial/cliente/:id',
+        loadComponent: () => import('./features/historial/historial-cliente/historial-cliente.component')
+          .then(m => m.HistorialClienteComponent)
+      },
+      {
+        path: 'historial/mascota/:id',
+        loadComponent: () => import('./features/historial/historial-mascota/historial-mascota.component')
+          .then(m => m.HistorialMascotaComponent)
+      },
       // Mantenimiento CRUD (Solo ADMIN)
       {
         path: 'mantenimiento',
