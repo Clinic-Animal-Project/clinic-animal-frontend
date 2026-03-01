@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './core/guards/auth.guard';
+import { authGuard, guestGuard, roleGuard } from './core/guards/auth.guard';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 
 export const routes: Routes = [
@@ -42,9 +42,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/citas/citas-page.component')
           .then(m => m.CitasPageComponent)
       },
-      // Mantenimiento CRUD
+      // Mantenimiento CRUD (Solo ADMIN)
       {
         path: 'mantenimiento',
+        canActivate: [roleGuard(['ADMIN'])],
         children: [
           {
             path: 'clientes',
