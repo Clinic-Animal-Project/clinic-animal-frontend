@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
 import { Cliente, CreateClienteDto, UpdateClienteDto } from '../models/cliente.model';
+import { API_ROUTES } from 'src/app/core/constants/api-routes';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -30,7 +30,7 @@ export interface PaginatedResponse<T> {
 })
 export class ClienteService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/clientes`;
+  private apiUrl = `${API_ROUTES.MASTER}/clientes`;
 
   getClientes(page: number = 0, size: number = 10): Observable<Cliente[]> {
     return this.http.get<any>(this.apiUrl).pipe(

@@ -2,15 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Mascota } from '../model/mascotas.model';
-import { environment } from '../../../../../environments/environment';
 import { ApiResponse } from 'src/app/core/models/response.model';
+import { API_ROUTES } from 'src/app/core/constants/api-routes';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MascotasService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/mascotas`;
+  private apiUrl = `${API_ROUTES.MASTER}/mascotas`;
 
   getMascotas(): Observable<Mascota[]> {
     return this.http.get<Mascota[]>(this.apiUrl);

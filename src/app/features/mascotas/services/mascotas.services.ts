@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Mascota, MascotaRequestDto } from '../../mascotas/models/mascotas.models';
+import { API_ROUTES } from 'src/app/core/constants/api-routes';
 
 
 export interface ApiResponse<T> {
@@ -30,7 +31,7 @@ export interface PaginatedResponse<T> {
 })
 export class MascotaService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/mascotas`;
+  private apiUrl = `${API_ROUTES.MASTER}/mascotas`;
 
 listarMascotas(nombre: string): Observable<Mascota[]> {
   if (nombre) {

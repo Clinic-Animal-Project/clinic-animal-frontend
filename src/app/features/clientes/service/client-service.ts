@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 import { Client, ClienteRequestDto } from '../model/client-model';
 import { Mascota } from '../../mascotas/models/mascotas.models';
+import { API_ROUTES } from 'src/app/core/constants/api-routes';
 
 
 export interface ApiResponse<T> {
@@ -31,8 +31,8 @@ export interface PaginatedResponse<T> {
 })
 export class ClientService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/clientes`;
-  private mascotasApiUrl = `${environment.apiUrl}/mascotas`;
+  private apiUrl = `${API_ROUTES.MASTER}/clientes`;
+  private mascotasApiUrl = `${API_ROUTES.MASTER}/mascotas`;
 
   listarClientes(nombre: string): Observable<Client[]> {
     if (nombre) {

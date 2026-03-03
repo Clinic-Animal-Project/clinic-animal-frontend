@@ -1,5 +1,12 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/api',
-  appName: 'Clínica Veterinaria - Development'
+  gatewayUrl: 'http://localhost:8100/api/v1',
+
+  services: {
+    auth: '/auth',
+    master: '/master',
+    proceso: '/processor'
+  },
+
+  appName: 'Clínica Veterinaria - Gateway Dev'
 };

@@ -1,10 +1,10 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, tap } from 'rxjs';
-import { User, LoginCredentials, AuthResponse, UserRole, UserPayload } from '../models/user.model';
+import { Observable, tap } from 'rxjs';
+import { User, LoginCredentials, AuthResponse, UserPayload } from '../models/user.model';
 import { JwtDecoderService } from './jwt-decoder.service';
-import { environment } from '../../../environments/environment';
+import { API_ROUTES } from '../constants/api-routes';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,8 @@ export class AuthService {
   // Signal para el usuario actual (Angular 18+)
   currentUser = signal<UserPayload | null>(null);
   
+  private readonly API_URL = `${API_ROUTES.AUTH}/usuario/login`; // URL del backend de autenticación
+
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'current_user';
 
@@ -29,7 +31,7 @@ export class AuthService {
    * Iniciar sesión (MOCK - Sin backend)
    */
   login(credentials: LoginCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`http://localhost:8086/usuario/login`, credentials)
+    return this.http.post<AuthResponse>(this.API_URL, credentials)
       .pipe(
         tap(response => {
           this.setSession(response);
